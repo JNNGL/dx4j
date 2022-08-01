@@ -29,7 +29,7 @@ jobs:
         id: project_version
       - name: Save version
         run: |
-          echo "version_name=${{steps.project_version.outputs.VERSION_NAME}}" >> $GITHUV_ENV
+          echo "version_name=${{steps.project_version.outputs.VERSION_NAME}}" >> $GITHUB_ENV
       - name: Upload dx4j
         uses: actions/upload-artifact@v3.0.0
         with:
