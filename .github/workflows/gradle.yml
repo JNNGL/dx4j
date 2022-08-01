@@ -24,10 +24,10 @@ jobs:
         with:
           arguments: build
       - name: Upload dx4j
-        uses: actions/upload-artifact@v3.1.0
+        uses: kittaakos/upload-artifact-as-is@v0
         with:
           path: "build/libs/*.jar"
       - name: Upload dx4j test
-        uses: actions/upload-artifact@v3.1.0
+        uses: kittaakos/upload-artifact-as-is@v0
         with:
           path: "dx4j-test/build/libs/*.jar"

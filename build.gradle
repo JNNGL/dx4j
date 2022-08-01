@@ -70,7 +70,3 @@ subprojects {
     systemProperty "java.library.path", "${project.rootDir}/build/natives/lib"
   }
 }
-
-task projectVersion {
-  println project.version
-}
