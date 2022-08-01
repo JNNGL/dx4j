@@ -1,0 +1,67 @@
+plugins {
+  id "java"
+}
+
+group "com.jnngl"
+version "1.0-SNAPSHOT"
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  testImplementation "org.junit.jupiter:junit-jupiter-api:5.8.2"
+  testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.8.2"
+}
+
+test {
+  useJUnitPlatform()
+}
+
+sourceSets {
+  main {
+    resources {
+      srcDirs "src/main/resources", "build/natives/lib"
+    }
+  }
+}
+
+compileJava {
+  options.compilerArgs += ["-h", file("src/main/native/include/jni")]
+}
+
+task compileNative {
+  dependsOn compileJava
+
+  assert System.getProperty("os.name").startsWith("Windows")
+
+  doFirst {
+    new File("${project.rootDir}/build/natives").mkdirs()
+  }
+
+  doLast {
+    exec {
+      commandLine("cmd", "/c", "cd \"${project.rootDir}\\build\\natives\" && cmake ../../src/main/native && cmake --build . -j " + Runtime.getRuntime().availableProcessors())
+    }
+  }
+}
+
+clean.doFirst {
+  delete fileTree("src/main/native/include/jni") {
+    include "*.h"
+  }
+}
+
+processResources {
+  dependsOn compileNative
+}
+
+tasks.withType(Test) {
+  systemProperty "java.library.path", "${project.rootDir}/build/natives/lib"
+}
+
+subprojects {
+  tasks.withType(JavaExec) {
+    systemProperty "java.library.path", "${project.rootDir}/build/natives/lib"
+  }
+}

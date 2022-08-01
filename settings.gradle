@@ -1,0 +1,3 @@
+rootProject.name = 'dx4j'
+include 'dx4j-test'
+

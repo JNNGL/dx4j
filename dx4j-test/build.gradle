@@ -1,0 +1,29 @@
+plugins {
+  id "java"
+}
+
+group "com.jnngl"
+
+repositories {
+  mavenCentral()
+}
+
+jar {
+  manifest {
+    attributes "Main-Class": "com.jnngl.dx4j.test.Test"
+  }
+
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+  from sourceSets.main.output
+
+  dependsOn configurations.runtimeClasspath
+  from {
+    configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }.collect { zipTree(it) }
+  } {
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
+  }
+}
+
+dependencies {
+  implementation rootProject
+}
