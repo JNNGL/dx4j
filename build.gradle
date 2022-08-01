@@ -18,6 +18,11 @@ test {
   useJUnitPlatform()
 }
 
+java {
+  setSourceCompatibility(JavaVersion.VERSION_11)
+  setTargetCompatibility(JavaVersion.VERSION_11)
+}
+
 sourceSets {
   main {
     resources {
