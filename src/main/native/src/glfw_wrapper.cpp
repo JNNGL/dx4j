@@ -8,6 +8,7 @@ DECL_CALLBACK(GLFWerrorfun_cb)
 DECL_CALLBACK_GROUP(GLFWwindow*, GLFWwindowposfun_cb)
 DECL_CALLBACK_GROUP(GLFWwindow*, GLFWwindowsizefun_cb)
 DECL_CALLBACK_GROUP(GLFWwindow*, GLFWwindowclosefun_cb)
+DECL_CALLBACK_GROUP(GLFWwindow*, GLFWwindowrefreshfun_cb)
 
 JNIEXPORT jlong JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwCreateWindow
         (JNIEnv *env, jclass, jint width, jint height, jstring jtitle, jlong monitor, jlong share) {
@@ -385,6 +386,36 @@ JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowCloseCallb
         result = (jlong) glfwSetWindowCloseCallback(window, nullptr);
     }
     UNLOCK_CALLBACK(GLFWwindowclosefun_cb)
+    if (!result) {
+        return nullptr;
+    }
+    return pair.old;
+}
+
+JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowRefreshCallback
+        (JNIEnv *env, jclass, jlong address, jobject callback) {
+    callback = env->NewGlobalRef(callback);
+    auto *window = (GLFWwindow *) address;
+    LOCK_CALLBACK(GLFWwindowrefreshfun_cb)
+    CallbackDataPair &pair = CALLBACK_GROUP_DATA(GLFWwindowrefreshfun_cb, window);
+    jlong result;
+    if (callback) {
+        CALLBACK_SET(pair, INIT_CALLBACK_DATA(callback, "invoke", "(J)V"))
+        result = (jlong) glfwSetWindowRefreshCallback(window, [](GLFWwindow *window) {
+            LOCK_CALLBACK(GLFWwindowrefreshfun_cb)
+            CallbackData callback = CALLBACK_GROUP_DATA(GLFWwindowrefreshfun_cb, window).current;
+            if (callback.isValid()) {
+                callback.env->CallVoidMethod(
+                        callback.instance, callback.callback,
+                        (jlong) window);
+            }
+            UNLOCK_CALLBACK(GLFWwindowrefreshfun_cb)
+        });
+    } else {
+        CALLBACK_SET(pair, {})
+        result = (jlong) glfwSetWindowRefreshCallback(window, nullptr);
+    }
+    UNLOCK_CALLBACK(GLFWwindowrefreshfun_cb)
     if (!result) {
         return nullptr;
     }

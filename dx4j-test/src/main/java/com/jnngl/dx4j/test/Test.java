@@ -26,6 +26,7 @@ class Test {
     glfwSetWindowPosCallback(window, (wnd, xpos, ypos) -> System.out.println("Move: " + xpos + " " + ypos));
     glfwSetWindowSizeCallback(window, (wnd, width, height) -> System.out.println("Resize: " + width + " " + height));
     glfwSetWindowCloseCallback(window, (wnd) -> System.out.println("Close window"));
+    glfwSetWindowRefreshCallback(window, (wnd) -> System.out.println("Refresh window"));
 
     while (!glfwWindowShouldClose(window)) {
       glfwSwapBuffers(window);
