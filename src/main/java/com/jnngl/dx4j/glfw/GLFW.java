@@ -1,7 +1,6 @@
 package com.jnngl.dx4j.glfw;
 
 import com.jnngl.dx4j.common.Pointer;
-import com.jnngl.dx4j.common.Validations;
 import java.util.Objects;
 
 public class GLFW {
@@ -125,17 +124,17 @@ public class GLFW {
   }
 
   public static void glfwDestroyWindow(GLFWwindow window) {
-    Validations.validateNotNull(window);
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
     nglfwDestroyWindow(window.getAddress());
   }
 
   public static boolean glfwWindowShouldClose(GLFWwindow window) {
-    Validations.validateNotNull(window);
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
     return nglfwWindowShouldClose(window.getAddress()) != 0;
   }
 
   public static void glfwSetWindowShouldClose(GLFWwindow window, int value) {
-    Validations.validateNotNull(window);
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
     nglfwSetWindowShouldClose(window.getAddress(), value);
   }
 
@@ -144,144 +143,132 @@ public class GLFW {
   }
 
   public static void glfwSetWindowTitle(GLFWwindow window, String title) {
-    Validations.validateNotNull(window);
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
     nglfwSetWindowTitle(window.getAddress(), title);
   }
 
   public static void glfwGetWindowPos(GLFWwindow window, int[] xpos, int[] ypos) {
-    Validations.validateNotNull(window);
-    Validations.validateArrayLength(xpos, 1);
-    Validations.validateArrayLength(ypos, 1);
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
     nglfwGetWindowPos(window.getAddress(), xpos, ypos);
   }
 
   public static void glfwSetWindowPos(GLFWwindow window, int xpos, int ypos) {
-    Validations.validateNotNull(window);
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
     nglfwSetWindowPos(window.getAddress(), xpos, ypos);
   }
 
   public static void glfwGetWindowSize(GLFWwindow window, int[] width, int[] height) {
-    Validations.validateNotNull(window);
-    Validations.validateArrayLength(width, 1);
-    Validations.validateArrayLength(height, 1);
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
     nglfwGetWindowSize(window.getAddress(), width, height);
   }
 
   public static void glfwSetWindowSizeLimits(GLFWwindow window, int minwidth, int minheight, int maxwidth, int maxheight) {
-    Validations.validateNotNull(window);
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
     nglfwSetWindowSizeLimits(window.getAddress(), minwidth, minheight, maxwidth, maxheight);
   }
 
   public static void glfwSetWindowAspectRatio(GLFWwindow window, int numer, int denom) {
-    Validations.validateNotNull(window);
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
     nglfwSetWindowAspectRatio(window.getAddress(), numer, denom);
   }
 
   public static void glfwSetWindowSize(GLFWwindow window, int width, int height) {
-    Validations.validateNotNull(window);
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
     nglfwSetWindowSize(window.getAddress(), width, height);
   }
 
   public static void glfwGetFramebufferSize(GLFWwindow window, int[] width, int[] height) {
-    Validations.validateNotNull(window);
-    Validations.validateArrayLength(width, 1);
-    Validations.validateArrayLength(height, 1);
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
     nglfwGetFramebufferSize(window.getAddress(), width, height);
   }
 
   public static void glfwGetWindowFrameSize(GLFWwindow window, int[] left, int[] top, int[] right, int[] bottom) {
-    Validations.validateNotNull(window);
-    Validations.validateArrayLength(left, 1);
-    Validations.validateArrayLength(top, 1);
-    Validations.validateArrayLength(right, 1);
-    Validations.validateArrayLength(bottom, 1);
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
     nglfwGetWindowFrameSize(window.getAddress(), left, top, right, bottom);
   }
 
   public static void glfwGetWindowContentScale(GLFWwindow window, float[] xscale, float[] yscale) {
-    Validations.validateNotNull(window);
-    Validations.validateArrayLength(xscale, 1);
-    Validations.validateArrayLength(yscale, 1);
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
     nglfwGetWindowContentScale(window.getAddress(), xscale, yscale);
   }
 
   public static float glfwGetWindowOpacity(GLFWwindow window) {
-    Validations.validateNotNull(window);
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
     return nglfwGetWindowOpacity(window.getAddress());
   }
 
   public static void glfwSetWindowOpacity(GLFWwindow window, float opacity) {
-    Validations.validateNotNull(window);
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
     nglfwSetWindowOpacity(window.getAddress(), opacity);
   }
 
   public static void glfwIconifyWindow(GLFWwindow window) {
-    Validations.validateNotNull(window);
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
     nglfwIconifyWindow(window.getAddress());
   }
 
   public static void glfwRestoreWindow(GLFWwindow window) {
-    Validations.validateNotNull(window);
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
     nglfwRestoreWindow(window.getAddress());
   }
 
   public static void glfwMaximizeWindow(GLFWwindow window) {
-    Validations.validateNotNull(window);
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
     nglfwMaximizeWindow(window.getAddress());
   }
 
   public static void glfwShowWindow(GLFWwindow window) {
-    Validations.validateNotNull(window);
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
     nglfwShowWindow(window.getAddress());
   }
 
   public static void glfwHideWindow(GLFWwindow window) {
-    Validations.validateNotNull(window);
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
     nglfwHideWindow(window.getAddress());
   }
 
   public static void glfwFocusWindow(GLFWwindow window) {
-    Validations.validateNotNull(window);
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
     nglfwFocusWindow(window.getAddress());
   }
 
   public static void glfwRequestWindowAttention(GLFWwindow window) {
-    Validations.validateNotNull(window);
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
     nglfwRequestWindowAttention(window.getAddress());
   }
 
   public static GLFWmonitor glfwGetWindowMonitor(GLFWwindow window) {
-    Validations.validateNotNull(window);
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
     return new GLFWmonitor(nglfwGetWindowMonitor(window.getAddress()));
   }
 
   public static void glfwSetWindowMonitor(GLFWwindow window, GLFWmonitor monitor, int xpos, int ypos, int width, int height, int refreshRate) {
-    Validations.validateNotNull(window);
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
     nglfwSetWindowMonitor(window.getAddress(), monitor.getAddress(), xpos, ypos, width, height, refreshRate);
   }
 
   public static int glfwGetWindowAttrib(GLFWwindow window, int attrib) {
-    Validations.validateNotNull(window);
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
     return nglfwGetWindowAttrib(window.getAddress(), attrib);
   }
 
   public static void glfwSetWindowAttrib(GLFWwindow window, int attrib, int value) {
-    Validations.validateNotNull(window);
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
     nglfwSetWindowAttrib(window.getAddress(), attrib, value);
   }
 
   public static void glfwSetWindowUserPointer(GLFWwindow window, Pointer pointer) {
-    Validations.validateNotNull(window);
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
     nglfwSetWindowUserPointer(window.getAddress(), pointer.getAddress());
   }
 
   public static Pointer glfwGetWindowUserPointer(GLFWwindow window) {
-    Validations.validateNotNull(window);
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
     return new Pointer(nglfwGetWindowUserPointer(window.getAddress()));
   }
 
   public static void glfwSwapBuffers(GLFWwindow window) {
-    Validations.validateNotNull(window);
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
     nglfwSwapBuffers(window.getAddress());
   }
 

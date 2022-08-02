@@ -1,6 +1,8 @@
 #include <jni/com_jnngl_dx4j_glfw_GLFW.h>
 #include <GLFW/glfw3.h>
 
+#define CHECK_JARRAY_LENGTH(x) x && env->GetArrayLength(x) > 0
+
 JNIEXPORT jlong JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwCreateWindow
         (JNIEnv* env, jclass, jint width, jint height, jstring jtitle, jlong monitor, jlong share) {
     const char* title = env->GetStringUTFChars(jtitle, nullptr);
@@ -36,8 +38,8 @@ JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetWindowPos
     int xpos, ypos;
     glfwGetWindowPos((GLFWwindow*) window, &xpos, &ypos);
     jint jxpos = xpos, jypos = ypos;
-    env->SetIntArrayRegion(jxposArr, 0, 1, &jxpos);
-    env->SetIntArrayRegion(jyposArr, 0, 1, &jypos);
+    if (CHECK_JARRAY_LENGTH(jxposArr)) { env->SetIntArrayRegion(jxposArr, 0, 1, &jxpos); }
+    if (CHECK_JARRAY_LENGTH(jyposArr)) { env->SetIntArrayRegion(jyposArr, 0, 1, &jypos); }
 }
 
 JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowPos
@@ -50,8 +52,8 @@ JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetWindowSize
     int width, height;
     glfwGetWindowSize((GLFWwindow*) window, &width, &height);
     jint jwidth = width, jheight = height;
-    env->SetIntArrayRegion(jwidthArr, 0, 1, &jwidth);
-    env->SetIntArrayRegion(jheightArr, 0, 1, &jheight);
+    if (CHECK_JARRAY_LENGTH(jwidthArr)) { env->SetIntArrayRegion(jwidthArr, 0, 1, &jwidth); }
+    if (CHECK_JARRAY_LENGTH(jheightArr)) { env->SetIntArrayRegion(jheightArr, 0, 1, &jheight); }
 }
 
 JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowSizeLimits
@@ -74,8 +76,8 @@ JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetFramebufferSize
     int width, height;
     glfwGetFramebufferSize((GLFWwindow*) window, &width, &height);
     jint jwidth = width, jheight = height;
-    env->SetIntArrayRegion(jwidthArr, 0, 1, &jwidth);
-    env->SetIntArrayRegion(jheightArr, 0, 1, &jheight);
+    if (CHECK_JARRAY_LENGTH(jwidthArr)) { env->SetIntArrayRegion(jwidthArr, 0, 1, &jwidth); }
+    if (CHECK_JARRAY_LENGTH(jheightArr)) { env->SetIntArrayRegion(jheightArr, 0, 1, &jheight); }
 }
 
 JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetWindowFrameSize
@@ -83,18 +85,18 @@ JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetWindowFrameSize
     int left, top, right, bottom;
     glfwGetWindowFrameSize((GLFWwindow*) window, &left, &top, &right, &bottom);
     jint jleft = left, jtop = top, jright = right, jbottom = bottom;
-    env->SetIntArrayRegion(jleftArr, 0, 1, &jleft);
-    env->SetIntArrayRegion(jtopArr, 0, 1, &jtop);
-    env->SetIntArrayRegion(jrightArr, 0, 1, &jright);
-    env->SetIntArrayRegion(jbottomArr, 0, 1, &jbottom);
+    if (CHECK_JARRAY_LENGTH(jleftArr)) { env->SetIntArrayRegion(jleftArr, 0, 1, &jleft); }
+    if (CHECK_JARRAY_LENGTH(jtopArr)) { env->SetIntArrayRegion(jtopArr, 0, 1, &jtop); }
+    if (CHECK_JARRAY_LENGTH(jrightArr)) { env->SetIntArrayRegion(jrightArr, 0, 1, &jright); }
+    if (CHECK_JARRAY_LENGTH(jbottomArr)) { env->SetIntArrayRegion(jbottomArr, 0, 1, &jbottom); }
 }
 
 JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetWindowContentScale
         (JNIEnv* env, jclass, jlong window, jfloatArray jxscaleArr, jfloatArray jyscaleArr) {
     float xscale, yscale;
     glfwGetWindowContentScale((GLFWwindow*) window, &xscale, &yscale);
-    env->SetFloatArrayRegion(jxscaleArr, 0, 1, &xscale);
-    env->SetFloatArrayRegion(jyscaleArr, 0, 1, &yscale);
+    if (CHECK_JARRAY_LENGTH(jxscaleArr)) { env->SetFloatArrayRegion(jxscaleArr, 0, 1, &xscale); }
+    if (CHECK_JARRAY_LENGTH(jyscaleArr)) { env->SetFloatArrayRegion(jyscaleArr, 0, 1, &yscale); }
 }
 
 JNIEXPORT jfloat JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetWindowOpacity
@@ -197,9 +199,9 @@ JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwGetVersion
     int major, minor, rev;
     glfwGetVersion(&major, &minor, &rev);
     jint jmajor = major, jminor = minor, jrev = rev;
-    env->SetIntArrayRegion(jmajorArr, 0, 1, &jmajor);
-    env->SetIntArrayRegion(jminorArr, 0, 1, &jminor);
-    env->SetIntArrayRegion(jrevArr, 0, 1, &jrev);
+    if (CHECK_JARRAY_LENGTH(jmajorArr)) { env->SetIntArrayRegion(jmajorArr, 0, 1, &jmajor); }
+    if (CHECK_JARRAY_LENGTH(jminorArr)) { env->SetIntArrayRegion(jminorArr, 0, 1, &jminor); }
+    if (CHECK_JARRAY_LENGTH(jrevArr)) { env->SetIntArrayRegion(jrevArr, 0, 1, &jrev); }
 }
 
 JNIEXPORT jstring JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwGetVersionString
@@ -209,9 +211,7 @@ JNIEXPORT jstring JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwGetVersionString
 
 JNIEXPORT jint JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwGetError
         (JNIEnv* env, jclass, jobjectArray jdescArr) {
-    if (!jdescArr || env->GetArrayLength(jdescArr) <= 0) {
-        return glfwGetError(nullptr);
-    } else {
+    if (CHECK_JARRAY_LENGTH(jdescArr)) {
         const char* description;
         int code = glfwGetError(&description);
         if (description) {
@@ -220,6 +220,8 @@ JNIEXPORT jint JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwGetError
             env->SetObjectArrayElement(jdescArr, 0, nullptr);
         }
         return code;
+    } else {
+        return glfwGetError(nullptr);
     }
 }
 
