@@ -344,7 +344,8 @@ public class GLFW {
 
   private static native GLFWwindowsizefun nglfwSetWindowSizeCallback(long window, GLFWwindowsizefun callback);
 
-  // TODO: glfwSetWindowCloseCallback
+  private static native GLFWwindowclosefun nglfwSetWindowCloseCallback(long window, GLFWwindowclosefun callback);
+
   // TODO: glfwSetWindowRefreshCallback
   // TODO: glfwSetWindowFocusCallback
   // TODO: glfwSetWindowIconifyCallback
@@ -544,6 +545,10 @@ public class GLFW {
 
   public static GLFWwindowsizefun glfwSetWindowSizeCallback(GLFWwindow window, GLFWwindowsizefun callback) {
     return nglfwSetWindowSizeCallback(window.getAddress(), callback);
+  }
+
+  public static GLFWwindowclosefun glfwSetWindowCloseCallback(GLFWwindow window, GLFWwindowclosefun callback) {
+    return nglfwSetWindowCloseCallback(window.getAddress(), callback);
   }
 
 }
