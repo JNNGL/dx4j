@@ -9,6 +9,7 @@ DECL_CALLBACK_GROUP(GLFWwindow*, GLFWwindowposfun_cb)
 DECL_CALLBACK_GROUP(GLFWwindow*, GLFWwindowsizefun_cb)
 DECL_CALLBACK_GROUP(GLFWwindow*, GLFWwindowclosefun_cb)
 DECL_CALLBACK_GROUP(GLFWwindow*, GLFWwindowrefreshfun_cb)
+DECL_CALLBACK_GROUP(GLFWwindow*, GLFWwindowfocusfun_cb);
 
 [[maybe_unused]] JNIEXPORT jlong JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwCreateWindow
         (JNIEnv *env, jclass, jint width, jint height, jstring jtitle, jlong monitor, jlong share) {
@@ -416,6 +417,36 @@ DECL_CALLBACK_GROUP(GLFWwindow*, GLFWwindowrefreshfun_cb)
         result = (jlong) glfwSetWindowRefreshCallback(window, nullptr);
     }
     UNLOCK_CALLBACK(GLFWwindowrefreshfun_cb)
+    if (!result) {
+        return nullptr;
+    }
+    return pair.old;
+}
+
+[[maybe_unused]] JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowFocusCallback
+        (JNIEnv *env, jclass, jlong address, jobject callback) {
+    callback = env->NewGlobalRef(callback);
+    auto *window = (GLFWwindow *) address;
+    LOCK_CALLBACK(GLFWwindowfocusfun_cb)
+    CallbackDataPair &pair = CALLBACK_GROUP_DATA(GLFWwindowfocusfun_cb, window);
+    jlong result;
+    if (callback) {
+        CALLBACK_SET(pair, INIT_CALLBACK_DATA(callback, "invoke", "(JI)V"))
+        result = (jlong) glfwSetWindowFocusCallback(window, [](GLFWwindow *window, int focused) {
+            LOCK_CALLBACK(GLFWwindowfocusfun_cb)
+            CallbackData callback = CALLBACK_GROUP_DATA(GLFWwindowfocusfun_cb, window).current;
+            if (callback.isValid()) {
+                callback.env->CallVoidMethod(
+                        callback.instance, callback.callback,
+                        (jlong) window, (jint) focused);
+            }
+            UNLOCK_CALLBACK(GLFWwindowfocusfun_cb)
+        });
+    } else {
+        CALLBACK_SET(pair, {})
+        result = (jlong) glfwSetWindowFocusCallback(window, nullptr);
+    }
+    UNLOCK_CALLBACK(GLFWwindowfocusfun_cb)
     if (!result) {
         return nullptr;
     }

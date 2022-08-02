@@ -27,6 +27,7 @@ class Test {
     glfwSetWindowSizeCallback(window, (wnd, width, height) -> System.out.println("Resize: " + width + " " + height));
     glfwSetWindowCloseCallback(window, (wnd) -> System.out.println("Close window"));
     glfwSetWindowRefreshCallback(window, (wnd) -> System.out.println("Refresh window"));
+    glfwSetWindowFocusCallback(window, (wnd, focused) -> System.out.println("Focus window: " + focused));
 
     while (!glfwWindowShouldClose(window)) {
       glfwSwapBuffers(window);
