@@ -10,7 +10,7 @@ DECL_CALLBACK_GROUP(GLFWwindow*, GLFWwindowsizefun_cb)
 DECL_CALLBACK_GROUP(GLFWwindow*, GLFWwindowclosefun_cb)
 DECL_CALLBACK_GROUP(GLFWwindow*, GLFWwindowrefreshfun_cb)
 
-JNIEXPORT jlong JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwCreateWindow
+[[maybe_unused]] JNIEXPORT jlong JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwCreateWindow
         (JNIEnv *env, jclass, jint width, jint height, jstring jtitle, jlong monitor, jlong share) {
     const char *title = env->GetStringUTFChars(jtitle, nullptr);
     GLFWwindow *window = glfwCreateWindow(width, height, title, (GLFWmonitor *) monitor, (GLFWwindow *) share);
@@ -18,29 +18,29 @@ JNIEXPORT jlong JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwCreateWindow
     return (jlong) window;
 }
 
-JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwDestroyWindow
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwDestroyWindow
         (JNIEnv *, jclass, jlong window) {
     glfwDestroyWindow((GLFWwindow *) window);
 }
 
-JNIEXPORT jint JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwWindowShouldClose
+[[maybe_unused]] JNIEXPORT jint JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwWindowShouldClose
         (JNIEnv *, jclass, jlong window) {
     return glfwWindowShouldClose((GLFWwindow *) window);
 }
 
-JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowShouldClose
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowShouldClose
         (JNIEnv *, jclass, jlong window, jint value) {
     glfwSetWindowShouldClose((GLFWwindow *) window, value);
 }
 
-JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowTitle
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowTitle
         (JNIEnv *env, jclass, jlong window, jstring jtitle) {
     const char *title = env->GetStringUTFChars(jtitle, nullptr);
     glfwSetWindowTitle((GLFWwindow *) window, title);
     env->ReleaseStringUTFChars(jtitle, title);
 }
 
-JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetWindowPos
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetWindowPos
         (JNIEnv *env, jclass, jlong window, jintArray jxposArr, jintArray jyposArr) {
     int xpos, ypos;
     glfwGetWindowPos((GLFWwindow *) window, &xpos, &ypos);
@@ -49,12 +49,12 @@ JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetWindowPos
     if (CHECK_JARRAY_LENGTH(jyposArr)) { env->SetIntArrayRegion(jyposArr, 0, 1, &jypos); }
 }
 
-JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowPos
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowPos
         (JNIEnv *, jclass, jlong window, jint xpos, jint ypos) {
     glfwSetWindowPos((GLFWwindow *) window, xpos, ypos);
 }
 
-JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetWindowSize
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetWindowSize
         (JNIEnv *env, jclass, jlong window, jintArray jwidthArr, jintArray jheightArr) {
     int width, height;
     glfwGetWindowSize((GLFWwindow *) window, &width, &height);
@@ -63,22 +63,22 @@ JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetWindowSize
     if (CHECK_JARRAY_LENGTH(jheightArr)) { env->SetIntArrayRegion(jheightArr, 0, 1, &jheight); }
 }
 
-JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowSizeLimits
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowSizeLimits
         (JNIEnv *, jclass, jlong window, jint minwidth, jint minheight, jint maxwidth, jint maxheight) {
     glfwSetWindowSizeLimits((GLFWwindow *) window, minwidth, minheight, maxwidth, maxheight);
 }
 
-JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowAspectRatio
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowAspectRatio
         (JNIEnv *, jclass, jlong window, jint numer, jint denom) {
     glfwSetWindowAspectRatio((GLFWwindow *) window, numer, denom);
 }
 
-JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowSize
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowSize
         (JNIEnv *, jclass, jlong window, jint width, jint height) {
     glfwSetWindowSize((GLFWwindow *) window, width, height);
 }
 
-JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetFramebufferSize
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetFramebufferSize
         (JNIEnv *env, jclass, jlong window, jintArray jwidthArr, jintArray jheightArr) {
     int width, height;
     glfwGetFramebufferSize((GLFWwindow *) window, &width, &height);
@@ -87,7 +87,7 @@ JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetFramebufferSize
     if (CHECK_JARRAY_LENGTH(jheightArr)) { env->SetIntArrayRegion(jheightArr, 0, 1, &jheight); }
 }
 
-JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetWindowFrameSize
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetWindowFrameSize
         (JNIEnv *env, jclass, jlong window, jintArray jleftArr, jintArray jtopArr, jintArray jrightArr,
          jintArray jbottomArr) {
     int left, top, right, bottom;
@@ -99,7 +99,7 @@ JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetWindowFrameSize
     if (CHECK_JARRAY_LENGTH(jbottomArr)) { env->SetIntArrayRegion(jbottomArr, 0, 1, &jbottom); }
 }
 
-JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetWindowContentScale
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetWindowContentScale
         (JNIEnv *env, jclass, jlong window, jfloatArray jxscaleArr, jfloatArray jyscaleArr) {
     float xscale, yscale;
     glfwGetWindowContentScale((GLFWwindow *) window, &xscale, &yscale);
@@ -107,103 +107,103 @@ JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetWindowContentScale
     if (CHECK_JARRAY_LENGTH(jyscaleArr)) { env->SetFloatArrayRegion(jyscaleArr, 0, 1, &yscale); }
 }
 
-JNIEXPORT jfloat JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetWindowOpacity
+[[maybe_unused]] JNIEXPORT jfloat JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetWindowOpacity
         (JNIEnv *, jclass, jlong window) {
     return glfwGetWindowOpacity((GLFWwindow *) window);
 }
 
-JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowOpacity
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowOpacity
         (JNIEnv *, jclass, jlong window, jfloat opacity) {
     glfwSetWindowOpacity((GLFWwindow *) window, opacity);
 }
 
-JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwIconifyWindow
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwIconifyWindow
         (JNIEnv *, jclass, jlong window) {
     glfwIconifyWindow((GLFWwindow *) window);
 }
 
-JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwRestoreWindow
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwRestoreWindow
         (JNIEnv *, jclass, jlong window) {
     glfwRestoreWindow((GLFWwindow *) window);
 }
 
-JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwMaximizeWindow
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwMaximizeWindow
         (JNIEnv *, jclass, jlong window) {
     glfwMaximizeWindow((GLFWwindow *) window);
 }
 
-JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwShowWindow
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwShowWindow
         (JNIEnv *, jclass, jlong window) {
     glfwShowWindow((GLFWwindow *) window);
 }
 
-JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwHideWindow
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwHideWindow
         (JNIEnv *, jclass, jlong window) {
     glfwHideWindow((GLFWwindow *) window);
 }
 
-JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwFocusWindow
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwFocusWindow
         (JNIEnv *, jclass, jlong window) {
     glfwFocusWindow((GLFWwindow *) window);
 }
 
-JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwRequestWindowAttention
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwRequestWindowAttention
         (JNIEnv *, jclass, jlong window) {
     glfwRequestWindowAttention((GLFWwindow *) window);
 }
 
-JNIEXPORT jlong JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetWindowMonitor
+[[maybe_unused]] JNIEXPORT jlong JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetWindowMonitor
         (JNIEnv *, jclass, jlong window) {
     return (jlong) glfwGetWindowMonitor((GLFWwindow *) window);
 }
 
-JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowMonitor
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowMonitor
         (JNIEnv *, jclass, jlong window, jlong monitor, jint xpos, jint ypos, jint width, jint height,
          jint refreshRate) {
     glfwSetWindowMonitor((GLFWwindow *) window, (GLFWmonitor *) monitor, xpos, ypos, width, height, refreshRate);
 }
 
-JNIEXPORT jint JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetWindowAttrib
+[[maybe_unused]] JNIEXPORT jint JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetWindowAttrib
         (JNIEnv *, jclass, jlong window, jint attrib) {
     return glfwGetWindowAttrib((GLFWwindow *) window, attrib);
 }
 
-JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowAttrib
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowAttrib
         (JNIEnv *, jclass, jlong window, jint attrib, jint value) {
     glfwSetWindowAttrib((GLFWwindow *) window, attrib, value);
 }
 
-JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowUserPointer
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowUserPointer
         (JNIEnv *, jclass, jlong window, jlong pointer) {
     glfwSetWindowUserPointer((GLFWwindow *) window, (void *) pointer);
 }
 
-JNIEXPORT jlong JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetWindowUserPointer
+[[maybe_unused]] JNIEXPORT jlong JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetWindowUserPointer
         (JNIEnv *, jclass, jlong window) {
     return (jlong) glfwGetWindowUserPointer((GLFWwindow *) window);
 }
 
-JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSwapBuffers
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSwapBuffers
         (JNIEnv *, jclass, jlong window) {
     glfwSwapBuffers((GLFWwindow *) window);
 }
 
-JNIEXPORT jint JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwInit
+[[maybe_unused]] JNIEXPORT jint JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwInit
         (JNIEnv *, jclass) {
     return glfwInit();
 }
 
-JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwTerminate
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwTerminate
         (JNIEnv *, jclass) {
     glfwTerminate();
 }
 
-JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwInitHint
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwInitHint
         (JNIEnv *, jclass, jint hint, jint value) {
     glfwInitHint(hint, value);
 }
 
-JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwGetVersion
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwGetVersion
         (JNIEnv *env, jclass, jintArray jmajorArr, jintArray jminorArr, jintArray jrevArr) {
     int major, minor, rev;
     glfwGetVersion(&major, &minor, &rev);
@@ -213,12 +213,12 @@ JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwGetVersion
     if (CHECK_JARRAY_LENGTH(jrevArr)) { env->SetIntArrayRegion(jrevArr, 0, 1, &jrev); }
 }
 
-JNIEXPORT jstring JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwGetVersionString
+[[maybe_unused]] JNIEXPORT jstring JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwGetVersionString
         (JNIEnv *env, jclass) {
     return env->NewStringUTF(glfwGetVersionString());
 }
 
-JNIEXPORT jint JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwGetError
+[[maybe_unused]] JNIEXPORT jint JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwGetError
         (JNIEnv *env, jclass, jobjectArray jdescArr) {
     if (CHECK_JARRAY_LENGTH(jdescArr)) {
         const char *description;
@@ -234,46 +234,46 @@ JNIEXPORT jint JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwGetError
     }
 }
 
-JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwDefaultWindowHints
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwDefaultWindowHints
         (JNIEnv *, jclass) {
     glfwDefaultWindowHints();
 }
 
-JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwWindowHint
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwWindowHint
         (JNIEnv *, jclass, jint hint, jint value) {
     glfwWindowHint(hint, value);
 }
 
-JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwWindowHintString
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwWindowHintString
         (JNIEnv *env, jclass, jint hint, jstring jvalue) {
     const char *value = env->GetStringUTFChars(jvalue, nullptr);
     glfwWindowHintString(hint, value);
     env->ReleaseStringUTFChars(jvalue, value);
 }
 
-JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwPollEvents
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwPollEvents
         (JNIEnv *, jclass) {
     glfwPollEvents();
 }
 
-JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwWaitEvents
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwWaitEvents
         (JNIEnv *, jclass) {
     glfwWaitEvents();
 }
 
-JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwWaitEventsTimeout
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwWaitEventsTimeout
         (JNIEnv *, jclass, jdouble timeout) {
     glfwWaitEventsTimeout(timeout);
 }
 
-JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwPostEmptyEvent
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwPostEmptyEvent
         (JNIEnv *, jclass) {
     glfwPostEmptyEvent();
 }
 
 //// JAVA CALLBACKS ////
 
-JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwSetErrorCallback
+[[maybe_unused]] JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwSetErrorCallback
         (JNIEnv *env, jclass, jobject callback) {
     callback = env->NewGlobalRef(callback);
     LOCK_CALLBACK(GLFWerrorfun_cb)
@@ -302,7 +302,7 @@ JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwSetErrorCallback
     return pair.old;
 }
 
-JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowPosCallback
+[[maybe_unused]] JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowPosCallback
         (JNIEnv *env, jclass, jlong address, jobject callback) {
     callback = env->NewGlobalRef(callback);
     auto *window = (GLFWwindow *) address;
@@ -332,7 +332,7 @@ JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowPosCallbac
     return pair.old;
 }
 
-JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowSizeCallback
+[[maybe_unused]] JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowSizeCallback
         (JNIEnv *env, jclass, jlong address, jobject callback) {
     callback = env->NewGlobalRef(callback);
     auto *window = (GLFWwindow *) address;
@@ -362,7 +362,7 @@ JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowSizeCallba
     return pair.old;
 }
 
-JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowCloseCallback
+[[maybe_unused]] JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowCloseCallback
         (JNIEnv *env, jclass, jlong address, jobject callback) {
     callback = env->NewGlobalRef(callback);
     auto *window = (GLFWwindow *) address;
@@ -392,7 +392,7 @@ JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowCloseCallb
     return pair.old;
 }
 
-JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowRefreshCallback
+[[maybe_unused]] JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowRefreshCallback
         (JNIEnv *env, jclass, jlong address, jobject callback) {
     callback = env->NewGlobalRef(callback);
     auto *window = (GLFWwindow *) address;
