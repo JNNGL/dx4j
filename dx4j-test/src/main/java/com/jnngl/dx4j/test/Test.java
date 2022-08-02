@@ -23,6 +23,9 @@ class Test {
 
     GLFWwindow window = glfwCreateWindow(800, 600, "Test Window", null, null);
 
+    glfwSetWindowPosCallback(window, (wnd, xpos, ypos) -> System.out.println("Move: " + xpos + " " + ypos));
+    glfwSetWindowSizeCallback(window, (wnd, width, height) -> System.out.println("Resize: " + width + " " + height));
+
     while (!glfwWindowShouldClose(window)) {
       glfwSwapBuffers(window);
       glfwPollEvents();
