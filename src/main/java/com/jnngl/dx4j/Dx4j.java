@@ -33,7 +33,4 @@ public class Dx4j {
       loaded = true;
     }
   }
-
-  public static native String helloWorld();
-
 }

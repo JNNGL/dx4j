@@ -37,6 +37,10 @@ if (NOT CMAKE_BUILD_TYPE)
       FORCE)
 endif()
 
+add_subdirectory(thirdparty/glfw)
+include_directories(thirdparty/glfw/include)
+
 include_directories(include)
 file(GLOB SOURCES src/*.cpp)
 add_library(dx4j SHARED ${SOURCES})
+target_link_libraries(dx4j glfw)
