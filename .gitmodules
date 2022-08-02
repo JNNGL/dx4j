@@ -1,4 +1,4 @@
-[submodule ".\\src\\main\\native\\thirdparty\\glfw"]
-	path = .\\src\\main\\native\\thirdparty\\glfw
+[submodule "src/main/native/thirdparty/glfw"]
+	path = src/main/native/thirdparty/glfw
 	url = https://github.com/glfw/glfw
 	branch = master
