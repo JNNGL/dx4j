@@ -12,6 +12,7 @@ DECL_CALLBACK_GROUP(GLFWwindow*, GLFWwindowrefreshfun_cb)
 DECL_CALLBACK_GROUP(GLFWwindow*, GLFWwindowfocusfun_cb)
 DECL_CALLBACK_GROUP(GLFWwindow*, GLFWwindowiconifyfun_cb)
 DECL_CALLBACK_GROUP(GLFWwindow*, GLFWwindowmaximizefun_cb)
+DECL_CALLBACK_GROUP(GLFWwindow*, GLFWframebuffersizefun_cb)
 
 [[maybe_unused]] JNIEXPORT jlong JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwCreateWindow
         (JNIEnv *env, jclass, jint width, jint height, jstring jtitle, jlong monitor, jlong share) {
@@ -509,6 +510,36 @@ DECL_CALLBACK_GROUP(GLFWwindow*, GLFWwindowmaximizefun_cb)
         result = (jlong) glfwSetWindowMaximizeCallback(window, nullptr);
     }
     UNLOCK_CALLBACK(GLFWwindowmaximizefun_cb)
+    if (!result) {
+        return nullptr;
+    }
+    return pair.old;
+}
+
+[[maybe_unused]] JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetFramebufferSizeCallback
+        (JNIEnv *env, jclass, jlong address, jobject callback) {
+    callback = env->NewGlobalRef(callback);
+    auto *window = (GLFWwindow *) address;
+    LOCK_CALLBACK(GLFWframebuffersizefun_cb)
+    CallbackDataPair &pair = CALLBACK_GROUP_DATA(GLFWframebuffersizefun_cb, window);
+    jlong result;
+    if (callback) {
+        CALLBACK_SET(pair, INIT_CALLBACK_DATA(callback, "invoke", "(JII)V"))
+        result = (jlong) glfwSetFramebufferSizeCallback(window, [](GLFWwindow *window, int width, int height) {
+            LOCK_CALLBACK(GLFWframebuffersizefun_cb)
+            CallbackData callback = CALLBACK_GROUP_DATA(GLFWframebuffersizefun_cb, window).current;
+            if (callback.isValid()) {
+                callback.env->CallVoidMethod(
+                        callback.instance, callback.callback,
+                        (jlong) window, (jint) width, (jint) height);
+            }
+            UNLOCK_CALLBACK(GLFWframebuffersizefun_cb)
+        });
+    } else {
+        CALLBACK_SET(pair, {})
+        result = (jlong) glfwSetFramebufferSizeCallback(window, nullptr);
+    }
+    UNLOCK_CALLBACK(GLFWframebuffersizefun_cb)
     if (!result) {
         return nullptr;
     }

@@ -30,6 +30,7 @@ class Test {
     glfwSetWindowFocusCallback(window, (wnd, focused) -> System.out.println("Focus window: " + focused));
     glfwSetWindowIconifyCallback(window, (wnd, iconified) -> System.out.println("Iconify window: " + iconified));
     glfwSetWindowMaximizeCallback(window, (wnd, maximized) -> System.out.println("Maximize window: " + maximized));
+    glfwSetFramebufferSizeCallback(window, (wnd, width, height) -> System.out.println("Framebuffer size: " + width + " " + height));
 
     while (!glfwWindowShouldClose(window)) {
       glfwSwapBuffers(window);
