@@ -5,6 +5,7 @@
 #define CHECK_JARRAY_LENGTH(x) x && env->GetArrayLength(x) > 0
 
 DECL_CALLBACK(GLFWerrorfun_cb)
+DECL_CALLBACK_GROUP(GLFWwindow*, GLFWwindowposfun_cb)
 
 JNIEXPORT jlong JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwCreateWindow
         (JNIEnv* env, jclass, jint width, jint height, jstring jtitle, jlong monitor, jlong share) {
@@ -271,11 +272,11 @@ JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwSetErrorCallback
         (JNIEnv* env, jclass, jobject callback) {
     callback = env->NewGlobalRef(callback);
     LOCK_CALLBACK(GLFWerrorfun_cb)
+    CallbackDataPair& pair = CALLBACK_DATA(GLFWerrorfun_cb);
     if (callback) {
-        CallbackDataPair& pair = CALLBACK_DATA(GLFWerrorfun_cb);
         CALLBACK_SET(pair, INIT_CALLBACK_DATA(callback, "invoke", "(ILjava/lang/String;)V"))
         UNLOCK_CALLBACK(GLFWerrorfun_cb)
-        glfwSetErrorCallback([](int errorCode, const char* description) {
+        if (!glfwSetErrorCallback([](int errorCode, const char* description) {
             LOCK_CALLBACK(GLFWerrorfun_cb)
             CallbackData callback = CALLBACK_DATA(GLFWerrorfun_cb).current;
             if (callback.isValid()) {
@@ -284,13 +285,48 @@ JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwSetErrorCallback
                         (jint) errorCode, callback.env->NewStringUTF(description));
             }
             UNLOCK_CALLBACK(GLFWerrorfun_cb)
-        });
+        })) {
+            return nullptr;
+        }
         return pair.old;
     } else {
-        CallbackDataPair& pair = CALLBACK_DATA(GLFWerrorfun_cb);
-        CALLBACK_SET(pair, {});
+        CALLBACK_SET(pair, {})
         UNLOCK_CALLBACK(GLFWerrorfun_cb)
-        glfwSetErrorCallback(nullptr);
+        if (!glfwSetErrorCallback(nullptr)) {
+            return nullptr;
+        }
+        return pair.old;
+    }
+}
+
+JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowPosCallback
+        (JNIEnv* env, jclass, jlong address, jobject callback) {
+    callback = env->NewGlobalRef(callback);
+    auto* window = (GLFWwindow*) address;
+    LOCK_CALLBACK(GLFWwindowposfun_cb)
+    CallbackDataPair& pair = CALLBACK_GROUP_DATA(GLFWwindowposfun_cb, window);
+    if (callback) {
+        CALLBACK_SET(pair, INIT_CALLBACK_DATA(callback, "invoke", "(JII)V"))
+        UNLOCK_CALLBACK(GLFWwindowposfun_cb)
+        if (!glfwSetWindowPosCallback(window, [](GLFWwindow* window, int xpos, int ypos) {
+            LOCK_CALLBACK(GLFWwindowposfun_cb)
+            CallbackData callback = CALLBACK_GROUP_DATA(GLFWwindowposfun_cb, window).current;
+            if (callback.isValid()) {
+                callback.env->CallVoidMethod(
+                        callback.instance, callback.callback,
+                        (jlong) window, (jint) xpos, (jint) ypos);
+            }
+            UNLOCK_CALLBACK(GLFWwindowposfun_cb)
+        })) {
+            return nullptr;
+        }
+        return pair.old;
+    } else {
+        CALLBACK_SET(pair, {})
+        UNLOCK_CALLBACK(GLFWwindowposfun_cb)
+        if (!glfwSetWindowPosCallback(window, nullptr)) {
+            return nullptr;
+        }
         return pair.old;
     }
 }
