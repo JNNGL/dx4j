@@ -13,6 +13,7 @@ DECL_CALLBACK_GROUP(GLFWwindow*, GLFWwindowfocusfun_cb)
 DECL_CALLBACK_GROUP(GLFWwindow*, GLFWwindowiconifyfun_cb)
 DECL_CALLBACK_GROUP(GLFWwindow*, GLFWwindowmaximizefun_cb)
 DECL_CALLBACK_GROUP(GLFWwindow*, GLFWframebuffersizefun_cb)
+DECL_CALLBACK_GROUP(GLFWwindow*, GLFWwindowcontentscalefun_cb)
 
 [[maybe_unused]] JNIEXPORT jlong JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwCreateWindow
         (JNIEnv *env, jclass, jint width, jint height, jstring jtitle, jlong monitor, jlong share) {
@@ -540,6 +541,36 @@ DECL_CALLBACK_GROUP(GLFWwindow*, GLFWframebuffersizefun_cb)
         result = (jlong) glfwSetFramebufferSizeCallback(window, nullptr);
     }
     UNLOCK_CALLBACK(GLFWframebuffersizefun_cb)
+    if (!result) {
+        return nullptr;
+    }
+    return pair.old;
+}
+
+[[maybe_unused]] JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowContentScaleCallback
+        (JNIEnv *env, jclass, jlong address, jobject callback) {
+    callback = env->NewGlobalRef(callback);
+    auto *window = (GLFWwindow *) address;
+    LOCK_CALLBACK(GLFWwindowcontentscalefun_cb)
+    CallbackDataPair &pair = CALLBACK_GROUP_DATA(GLFWwindowcontentscalefun_cb, window);
+    jlong result;
+    if (callback) {
+        CALLBACK_SET(pair, INIT_CALLBACK_DATA(callback, "invoke", "(JFF)V"))
+        result = (jlong) glfwSetWindowContentScaleCallback(window, [](GLFWwindow *window, float xscale, float yscale) {
+            LOCK_CALLBACK(GLFWwindowcontentscalefun_cb)
+            CallbackData callback = CALLBACK_GROUP_DATA(GLFWwindowcontentscalefun_cb, window).current;
+            if (callback.isValid()) {
+                callback.env->CallVoidMethod(
+                        callback.instance, callback.callback,
+                        (jlong) window, (jfloat) xscale, (jfloat) yscale);
+            }
+            UNLOCK_CALLBACK(GLFWwindowcontentscalefun_cb)
+        });
+    } else {
+        CALLBACK_SET(pair, {})
+        result = (jlong) glfwSetWindowContentScaleCallback(window, nullptr);
+    }
+    UNLOCK_CALLBACK(GLFWwindowcontentscalefun_cb)
     if (!result) {
         return nullptr;
     }

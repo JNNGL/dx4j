@@ -356,7 +356,7 @@ public class GLFW {
 
   private static native GLFWframebuffersizefun nglfwSetFramebufferSizeCallback(long window, GLFWframebuffersizefun callback);
 
-  // TODO: glfwSetWindowContentScaleCallback
+  private static native GLFWwindowcontentscalefun nglfwSetWindowContentScaleCallback(long window, GLFWwindowcontentscalefun callback);
 
   private static native void nglfwSwapBuffers(long window);
 
@@ -574,6 +574,10 @@ public class GLFW {
 
   public static GLFWframebuffersizefun glfwSetFramebufferSizeCallback(GLFWwindow window, GLFWframebuffersizefun callback) {
     return nglfwSetFramebufferSizeCallback(window.getAddress(), callback);
+  }
+
+  public static GLFWwindowcontentscalefun glfwSetWindowContentScaleCallback(GLFWwindow window, GLFWwindowcontentscalefun callback) {
+    return nglfwSetWindowContentScaleCallback(window.getAddress(), callback);
   }
 
 }
