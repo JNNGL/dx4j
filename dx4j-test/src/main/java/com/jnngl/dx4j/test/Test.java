@@ -19,7 +19,24 @@ class Test {
     System.out.println(major[0] + "." + minor[0] + "." + rev[0]);
 
     glfwInit();
-    GLFWwindow window = glfwCreateWindow(800, 600, "Test Window", null, null);
+
+    glfwSetErrorCallback((errorCode, description) ->
+        System.err.println("[GLFW ERROR TEST 1] " + errorCode + ": " + description));
+
+    GLFWwindow window = glfwCreateWindow(0, 0, "", null, null);
+    assert window.getAddress() == 0;
+
+    glfwSetErrorCallback((errorCode, description) ->
+        System.err.println("[GLFW ERROR TEST 2] " + errorCode + ": " + description))
+        .invoke(0, "prev callback test");
+
+    window = glfwCreateWindow(0, 0, "", null, null);
+    assert window.getAddress() == 0;
+
+    glfwSetErrorCallback(null).invoke(0, "test");
+    assert glfwSetErrorCallback(null) == null;
+
+    window = glfwCreateWindow(800, 600, "Test Window", null, null);
 
     while (!glfwWindowShouldClose(window)) {
       glfwSwapBuffers(window);

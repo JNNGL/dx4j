@@ -280,8 +280,6 @@ public class GLFW {
   public static final int GLFW_HRESIZE_CURSOR = 0x00036005;
   public static final int GLFW_VRESIZE_CURSOR = 0x00036006;
 
-  // TODO: glfwSetErrorCallback
-
   private static native long nglfwCreateWindow(int width, int height, String title, long monitor, long share);
 
   private static native void nglfwDestroyWindow(long window);
@@ -365,6 +363,8 @@ public class GLFW {
   public static native String glfwGetVersionString();
 
   public static native int glfwGetError(String[] description);
+
+  public static native GLFWerrorfun glfwSetErrorCallback(GLFWerrorfun callback);
 
   public static native void glfwDefaultWindowHints();
 

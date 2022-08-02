@@ -1,7 +1,10 @@
 #include <jni/com_jnngl_dx4j_glfw_GLFW.h>
 #include <GLFW/glfw3.h>
+#include <callback_utils.h>
 
 #define CHECK_JARRAY_LENGTH(x) x && env->GetArrayLength(x) > 0
+
+DECL_CALLBACK(GLFWerrorfun_cb)
 
 JNIEXPORT jlong JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwCreateWindow
         (JNIEnv* env, jclass, jint width, jint height, jstring jtitle, jlong monitor, jlong share) {
@@ -260,4 +263,34 @@ JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwWaitEventsTimeout
 JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwPostEmptyEvent
         (JNIEnv*, jclass) {
     glfwPostEmptyEvent();
+}
+
+//// JAVA CALLBACKS ////
+
+JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwSetErrorCallback
+        (JNIEnv* env, jclass, jobject callback) {
+    callback = env->NewGlobalRef(callback);
+    LOCK_CALLBACK(GLFWerrorfun_cb)
+    if (callback) {
+        CallbackDataPair& pair = CALLBACK_DATA(GLFWerrorfun_cb);
+        CALLBACK_SET(pair, INIT_CALLBACK_DATA(callback, "invoke", "(ILjava/lang/String;)V"))
+        UNLOCK_CALLBACK(GLFWerrorfun_cb)
+        glfwSetErrorCallback([](int errorCode, const char* description) {
+            LOCK_CALLBACK(GLFWerrorfun_cb)
+            CallbackData callback = CALLBACK_DATA(GLFWerrorfun_cb).current;
+            if (callback.isValid()) {
+                callback.env->CallVoidMethod(
+                        callback.instance, callback.callback,
+                        (jint) errorCode, callback.env->NewStringUTF(description));
+            }
+            UNLOCK_CALLBACK(GLFWerrorfun_cb)
+        });
+        return pair.old;
+    } else {
+        CallbackDataPair& pair = CALLBACK_DATA(GLFWerrorfun_cb);
+        CALLBACK_SET(pair, {});
+        UNLOCK_CALLBACK(GLFWerrorfun_cb)
+        glfwSetErrorCallback(nullptr);
+        return pair.old;
+    }
 }
