@@ -193,8 +193,13 @@ JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwInitHint
 }
 
 JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwGetVersion
-        (JNIEnv*, jclass, jintArray, jintArray, jintArray) {
-    // TODO
+        (JNIEnv* env, jclass, jintArray jmajorArr, jintArray jminorArr, jintArray jrevArr) {
+    int major, minor, rev;
+    glfwGetVersion(&major, &minor, &rev);
+    jint jmajor = major, jminor = minor, jrev = rev;
+    env->SetIntArrayRegion(jmajorArr, 0, 1, &jmajor);
+    env->SetIntArrayRegion(jminorArr, 0, 1, &jminor);
+    env->SetIntArrayRegion(jrevArr, 0, 1, &jrev);
 }
 
 JNIEXPORT jstring JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwGetVersionString
@@ -203,9 +208,19 @@ JNIEXPORT jstring JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwGetVersionString
 }
 
 JNIEXPORT jint JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwGetError
-        (JNIEnv*, jclass, jobjectArray) {
-    // TODO
-    return 0;
+        (JNIEnv* env, jclass, jobjectArray jdescArr) {
+    if (!jdescArr || env->GetArrayLength(jdescArr) <= 0) {
+        return glfwGetError(nullptr);
+    } else {
+        const char* description;
+        int code = glfwGetError(&description);
+        if (description) {
+            env->SetObjectArrayElement(jdescArr, 0, env->NewStringUTF(description));
+        } else {
+            env->SetObjectArrayElement(jdescArr, 0, nullptr);
+        }
+        return code;
+    }
 }
 
 JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwDefaultWindowHints
