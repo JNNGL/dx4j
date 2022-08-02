@@ -11,6 +11,7 @@ DECL_CALLBACK_GROUP(GLFWwindow*, GLFWwindowclosefun_cb)
 DECL_CALLBACK_GROUP(GLFWwindow*, GLFWwindowrefreshfun_cb)
 DECL_CALLBACK_GROUP(GLFWwindow*, GLFWwindowfocusfun_cb)
 DECL_CALLBACK_GROUP(GLFWwindow*, GLFWwindowiconifyfun_cb)
+DECL_CALLBACK_GROUP(GLFWwindow*, GLFWwindowmaximizefun_cb)
 
 [[maybe_unused]] JNIEXPORT jlong JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwCreateWindow
         (JNIEnv *env, jclass, jint width, jint height, jstring jtitle, jlong monitor, jlong share) {
@@ -463,13 +464,13 @@ DECL_CALLBACK_GROUP(GLFWwindow*, GLFWwindowiconifyfun_cb)
     jlong result;
     if (callback) {
         CALLBACK_SET(pair, INIT_CALLBACK_DATA(callback, "invoke", "(JI)V"))
-        result = (jlong) glfwSetWindowIconifyCallback(window, [](GLFWwindow *window, int focused) {
+        result = (jlong) glfwSetWindowIconifyCallback(window, [](GLFWwindow *window, int iconified) {
             LOCK_CALLBACK(GLFWwindowiconifyfun_cb)
             CallbackData callback = CALLBACK_GROUP_DATA(GLFWwindowiconifyfun_cb, window).current;
             if (callback.isValid()) {
                 callback.env->CallVoidMethod(
                         callback.instance, callback.callback,
-                        (jlong) window, (jint) focused);
+                        (jlong) window, (jint) iconified);
             }
             UNLOCK_CALLBACK(GLFWwindowiconifyfun_cb)
         });
@@ -478,6 +479,36 @@ DECL_CALLBACK_GROUP(GLFWwindow*, GLFWwindowiconifyfun_cb)
         result = (jlong) glfwSetWindowIconifyCallback(window, nullptr);
     }
     UNLOCK_CALLBACK(GLFWwindowiconifyfun_cb)
+    if (!result) {
+        return nullptr;
+    }
+    return pair.old;
+}
+
+[[maybe_unused]] JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowMaximizeCallback
+        (JNIEnv *env, jclass, jlong address, jobject callback) {
+    callback = env->NewGlobalRef(callback);
+    auto *window = (GLFWwindow *) address;
+    LOCK_CALLBACK(GLFWwindowmaximizefun_cb)
+    CallbackDataPair &pair = CALLBACK_GROUP_DATA(GLFWwindowmaximizefun_cb, window);
+    jlong result;
+    if (callback) {
+        CALLBACK_SET(pair, INIT_CALLBACK_DATA(callback, "invoke", "(JI)V"))
+        result = (jlong) glfwSetWindowMaximizeCallback(window, [](GLFWwindow *window, int maximized) {
+            LOCK_CALLBACK(GLFWwindowmaximizefun_cb)
+            CallbackData callback = CALLBACK_GROUP_DATA(GLFWwindowmaximizefun_cb, window).current;
+            if (callback.isValid()) {
+                callback.env->CallVoidMethod(
+                        callback.instance, callback.callback,
+                        (jlong) window, (jint) maximized);
+            }
+            UNLOCK_CALLBACK(GLFWwindowmaximizefun_cb)
+        });
+    } else {
+        CALLBACK_SET(pair, {})
+        result = (jlong) glfwSetWindowMaximizeCallback(window, nullptr);
+    }
+    UNLOCK_CALLBACK(GLFWwindowmaximizefun_cb)
     if (!result) {
         return nullptr;
     }
