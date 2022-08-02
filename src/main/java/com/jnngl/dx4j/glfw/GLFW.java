@@ -350,7 +350,8 @@ public class GLFW {
 
   private static native GLFWwindowfocusfun nglfwSetWindowFocusCallback(long window, GLFWwindowfocusfun callback);
 
-  // TODO: glfwSetWindowIconifyCallback
+  private static native GLFWwindowiconifyfun nglfwSetWindowIconifyCallback(long window, GLFWwindowiconifyfun callback);
+
   // TODO: glfwSetWindowMaximizeCallback
   // TODO: glfwSetFramebufferSizeCallback
   // TODO: glfwSetWindowContentScaleCallback
@@ -559,6 +560,10 @@ public class GLFW {
 
   public static GLFWwindowfocusfun glfwSetWindowFocusCallback(GLFWwindow window, GLFWwindowfocusfun callback) {
     return nglfwSetWindowFocusCallback(window.getAddress(), callback);
+  }
+
+  public static GLFWwindowiconifyfun glfwSetWindowIconifyCallback(GLFWwindow window, GLFWwindowiconifyfun callback) {
+    return nglfwSetWindowIconifyCallback(window.getAddress(), callback);
   }
 
 }

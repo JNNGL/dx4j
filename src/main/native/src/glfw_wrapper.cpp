@@ -9,7 +9,8 @@ DECL_CALLBACK_GROUP(GLFWwindow*, GLFWwindowposfun_cb)
 DECL_CALLBACK_GROUP(GLFWwindow*, GLFWwindowsizefun_cb)
 DECL_CALLBACK_GROUP(GLFWwindow*, GLFWwindowclosefun_cb)
 DECL_CALLBACK_GROUP(GLFWwindow*, GLFWwindowrefreshfun_cb)
-DECL_CALLBACK_GROUP(GLFWwindow*, GLFWwindowfocusfun_cb);
+DECL_CALLBACK_GROUP(GLFWwindow*, GLFWwindowfocusfun_cb)
+DECL_CALLBACK_GROUP(GLFWwindow*, GLFWwindowiconifyfun_cb)
 
 [[maybe_unused]] JNIEXPORT jlong JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwCreateWindow
         (JNIEnv *env, jclass, jint width, jint height, jstring jtitle, jlong monitor, jlong share) {
@@ -447,6 +448,36 @@ DECL_CALLBACK_GROUP(GLFWwindow*, GLFWwindowfocusfun_cb);
         result = (jlong) glfwSetWindowFocusCallback(window, nullptr);
     }
     UNLOCK_CALLBACK(GLFWwindowfocusfun_cb)
+    if (!result) {
+        return nullptr;
+    }
+    return pair.old;
+}
+
+[[maybe_unused]] JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowIconifyCallback
+        (JNIEnv *env, jclass, jlong address, jobject callback) {
+    callback = env->NewGlobalRef(callback);
+    auto *window = (GLFWwindow *) address;
+    LOCK_CALLBACK(GLFWwindowiconifyfun_cb)
+    CallbackDataPair &pair = CALLBACK_GROUP_DATA(GLFWwindowiconifyfun_cb, window);
+    jlong result;
+    if (callback) {
+        CALLBACK_SET(pair, INIT_CALLBACK_DATA(callback, "invoke", "(JI)V"))
+        result = (jlong) glfwSetWindowIconifyCallback(window, [](GLFWwindow *window, int focused) {
+            LOCK_CALLBACK(GLFWwindowiconifyfun_cb)
+            CallbackData callback = CALLBACK_GROUP_DATA(GLFWwindowiconifyfun_cb, window).current;
+            if (callback.isValid()) {
+                callback.env->CallVoidMethod(
+                        callback.instance, callback.callback,
+                        (jlong) window, (jint) focused);
+            }
+            UNLOCK_CALLBACK(GLFWwindowiconifyfun_cb)
+        });
+    } else {
+        CALLBACK_SET(pair, {})
+        result = (jlong) glfwSetWindowIconifyCallback(window, nullptr);
+    }
+    UNLOCK_CALLBACK(GLFWwindowiconifyfun_cb)
     if (!result) {
         return nullptr;
     }

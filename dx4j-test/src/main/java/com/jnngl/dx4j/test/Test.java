@@ -28,6 +28,7 @@ class Test {
     glfwSetWindowCloseCallback(window, (wnd) -> System.out.println("Close window"));
     glfwSetWindowRefreshCallback(window, (wnd) -> System.out.println("Refresh window"));
     glfwSetWindowFocusCallback(window, (wnd, focused) -> System.out.println("Focus window: " + focused));
+    glfwSetWindowIconifyCallback(window, (wnd, iconified) -> System.out.println("Iconify window: " + iconified));
 
     while (!glfwWindowShouldClose(window)) {
       glfwSwapBuffers(window);
