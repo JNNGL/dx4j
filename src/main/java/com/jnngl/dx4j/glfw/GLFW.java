@@ -280,6 +280,37 @@ public class GLFW {
   public static final int GLFW_HRESIZE_CURSOR = 0x00036005;
   public static final int GLFW_VRESIZE_CURSOR = 0x00036006;
 
+  public static final int GLFW_NO_API = 0;
+  public static final int GLFW_OPENGL_API = 0x00030001;
+  public static final int GLFW_OPENGL_ES_API = 0x00030002;
+  public static final int GLFW_NO_ROBUSTNESS = 0;
+  public static final int GLFW_NO_RESET_NOTIFICATION = 0x00031001;
+  public static final int GLFW_LOSE_CONTEXT_ON_RESET = 0x00031002;
+  public static final int GLFW_OPENGL_ANY_PROFILE = 0;
+  public static final int GLFW_OPENGL_CORE_PROFILE = 0x00032001;
+  public static final int GLFW_OPENGL_COMPAT_PROFILE = 0x00032002;
+  public static final int GLFW_CURSOR = 0x00033001;
+  public static final int GLFW_STICKY_KEYS = 0x00033002;
+  public static final int GLFW_STICKY_MOUSE_BUTTONS = 0x00033003;
+  public static final int GLFW_LOCK_KEY_MODS = 0x00033004;
+  public static final int GLFW_RAW_MOUSE_MOTION = 0x00033005;
+  public static final int GLFW_CURSOR_NORMAL = 0x00034001;
+  public static final int GLFW_CURSOR_HIDDEN = 0x00034002;
+  public static final int GLFW_CURSOR_DISABLED = 0x00034003;
+  public static final int GLFW_ANY_RELEASE_BEHAVIOR = 0;
+  public static final int GLFW_RELEASE_BEHAVIOR_FLUSH = 0x00035001;
+  public static final int GLFW_RELEASE_BEHAVIOR_NONE = 0x00035002;
+  public static final int GLFW_NATIVE_CONTEXT_API = 0x00036001;
+  public static final int GLFW_EGL_CONTEXT_API = 0x00036002;
+  public static final int GLFW_OSMESA_CONTEXT_API = 0x00036003;
+  public static final int GLFW_CONNECTED = 0x00040001;
+  public static final int GLFW_DISCONNECTED = 0x00040002;
+  public static final int GLFW_DONT_CARE = -1;
+
+  public static final int GLFW_RELEASE = 0;
+  public static final int GLFW_PRESS = 1;
+  public static final int GLFW_REPEAT = 2;
+
   private static native long nglfwCreateWindow(int width, int height, String title, long monitor, long share);
 
   private static native void nglfwDestroyWindow(long window);
