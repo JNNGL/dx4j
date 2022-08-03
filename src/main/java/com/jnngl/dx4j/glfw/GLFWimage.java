@@ -30,21 +30,24 @@ public class GLFWimage {
   public GLFWimage(BufferedImage image) {
     this.width = image.getWidth();
     this.height = image.getHeight();
-    ComponentColorModel colorModel = new ComponentColorModel(
-        ColorSpace.getInstance(ColorSpace.CS_sRGB), true, false, Transparency.TRANSLUCENT, DataBuffer.TYPE_BYTE);
-    WritableRaster raster = Raster.createInterleavedRaster(
-        DataBuffer.TYPE_BYTE, image.getWidth(), image.getHeight(), image.getWidth() * 4, 4, new int[] {0, 1, 2, 3}, null);
-    BufferedImage rgba4 = new BufferedImage(colorModel, raster, colorModel.isAlphaPremultiplied(), null);
-    byte[] rgba = ((DataBufferByte) raster.getDataBuffer()).getData();
+    BufferedImage rgba4 = createImage();
+    this.pixels = ((DataBufferByte) rgba4.getRaster().getDataBuffer()).getData();
     Graphics2D graphics = rgba4.createGraphics();
     graphics.setComposite(AlphaComposite.Src);
     graphics.drawImage(image, 0, 0, null);
     graphics.dispose();
-    this.pixels = rgba;
+  }
+
+  private BufferedImage createImage() {
+    ComponentColorModel colorModel = new ComponentColorModel(
+        ColorSpace.getInstance(ColorSpace.CS_sRGB), true, false, Transparency.TRANSLUCENT, DataBuffer.TYPE_BYTE);
+    WritableRaster raster = Raster.createInterleavedRaster(
+        DataBuffer.TYPE_BYTE, this.width, this.height, this.width * 4, 4, new int[] {0, 1, 2, 3}, null);
+    return new BufferedImage(colorModel, raster, colorModel.isAlphaPremultiplied(), null);
   }
 
   public BufferedImage toBufferedImage() {
-    BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+    BufferedImage image = createImage();
     System.arraycopy(pixels, 0, ((DataBufferByte) image.getRaster().getDataBuffer()).getData(), 0, pixels.length);
     return image;
   }

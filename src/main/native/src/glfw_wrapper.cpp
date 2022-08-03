@@ -638,11 +638,11 @@ DECL_CALLBACK_GROUP(GLFWwindow*, GLFWdropfun_cb)
 
 [[maybe_unused]] JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwSetJoystickCallback
         (JNIEnv *env, jclass, jobject callback) {
-    callback = env->NewGlobalRef(callback);
     LOCK_CALLBACK(GLFWjoystickfun_cb)
     CallbackDataPair &pair = CALLBACK_DATA(GLFWjoystickfun_cb);
     jlong result;
     if (callback) {
+        callback = env->NewGlobalRef(callback);
         CALLBACK_SET(pair, INIT_CALLBACK_DATA(callback, "invoke", "(II)V"))
         result = (jlong) glfwSetJoystickCallback([](int jid, int event) {
             LOCK_CALLBACK(GLFWjoystickfun_cb)
@@ -667,11 +667,11 @@ DECL_CALLBACK_GROUP(GLFWwindow*, GLFWdropfun_cb)
 
 [[maybe_unused]] JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwSetMonitorCallback
         (JNIEnv *env, jclass, jobject callback) {
-    callback = env->NewGlobalRef(callback);
     LOCK_CALLBACK(GLFWmonitorfun_cb)
     CallbackDataPair &pair = CALLBACK_DATA(GLFWmonitorfun_cb);
     jlong result;
     if (callback) {
+        callback = env->NewGlobalRef(callback);
         CALLBACK_SET(pair, INIT_CALLBACK_DATA(callback, "invoke", "(JI)V"))
         result = (jlong) glfwSetMonitorCallback([](GLFWmonitor *monitor, int event) {
             LOCK_CALLBACK(GLFWmonitorfun_cb)
@@ -696,11 +696,11 @@ DECL_CALLBACK_GROUP(GLFWwindow*, GLFWdropfun_cb)
 
 [[maybe_unused]] JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwSetErrorCallback
         (JNIEnv *env, jclass, jobject callback) {
-    callback = env->NewGlobalRef(callback);
     LOCK_CALLBACK(GLFWerrorfun_cb)
     CallbackDataPair &pair = CALLBACK_DATA(GLFWerrorfun_cb);
     jlong result;
     if (callback) {
+        callback = env->NewGlobalRef(callback);
         CALLBACK_SET(pair, INIT_CALLBACK_DATA(callback, "invoke", "(ILjava/lang/String;)V"))
         result = (jlong) glfwSetErrorCallback([](int errorCode, const char *description) {
             LOCK_CALLBACK(GLFWerrorfun_cb)
@@ -725,12 +725,12 @@ DECL_CALLBACK_GROUP(GLFWwindow*, GLFWdropfun_cb)
 
 [[maybe_unused]] JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowPosCallback
         (JNIEnv *env, jclass, jlong address, jobject callback) {
-    callback = env->NewGlobalRef(callback);
     auto *window = (GLFWwindow *) address;
     LOCK_CALLBACK(GLFWwindowposfun_cb)
     CallbackDataPair &pair = CALLBACK_GROUP_DATA(GLFWwindowposfun_cb, window);
     jlong result;
     if (callback) {
+        callback = env->NewGlobalRef(callback);
         CALLBACK_SET(pair, INIT_CALLBACK_DATA(callback, "invoke", "(JII)V"))
         result = (jlong) glfwSetWindowPosCallback(window, [](GLFWwindow *window, int xpos, int ypos) {
             LOCK_CALLBACK(GLFWwindowposfun_cb)
@@ -755,12 +755,12 @@ DECL_CALLBACK_GROUP(GLFWwindow*, GLFWdropfun_cb)
 
 [[maybe_unused]] JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowSizeCallback
         (JNIEnv *env, jclass, jlong address, jobject callback) {
-    callback = env->NewGlobalRef(callback);
     auto *window = (GLFWwindow *) address;
     LOCK_CALLBACK(GLFWwindowsizefun_cb)
     CallbackDataPair &pair = CALLBACK_GROUP_DATA(GLFWwindowsizefun_cb, window);
     jlong result;
     if (callback) {
+        callback = env->NewGlobalRef(callback);
         CALLBACK_SET(pair, INIT_CALLBACK_DATA(callback, "invoke", "(JII)V"))
         result = (jlong) glfwSetWindowSizeCallback(window, [](GLFWwindow *window, int width, int height) {
             LOCK_CALLBACK(GLFWwindowsizefun_cb)
@@ -785,12 +785,12 @@ DECL_CALLBACK_GROUP(GLFWwindow*, GLFWdropfun_cb)
 
 [[maybe_unused]] JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowCloseCallback
         (JNIEnv *env, jclass, jlong address, jobject callback) {
-    callback = env->NewGlobalRef(callback);
     auto *window = (GLFWwindow *) address;
     LOCK_CALLBACK(GLFWwindowclosefun_cb)
     CallbackDataPair &pair = CALLBACK_GROUP_DATA(GLFWwindowclosefun_cb, window);
     jlong result;
     if (callback) {
+        callback = env->NewGlobalRef(callback);
         CALLBACK_SET(pair, INIT_CALLBACK_DATA(callback, "invoke", "(J)V"))
         result = (jlong) glfwSetWindowCloseCallback(window, [](GLFWwindow *window) {
             LOCK_CALLBACK(GLFWwindowclosefun_cb)
@@ -815,12 +815,12 @@ DECL_CALLBACK_GROUP(GLFWwindow*, GLFWdropfun_cb)
 
 [[maybe_unused]] JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowRefreshCallback
         (JNIEnv *env, jclass, jlong address, jobject callback) {
-    callback = env->NewGlobalRef(callback);
     auto *window = (GLFWwindow *) address;
     LOCK_CALLBACK(GLFWwindowrefreshfun_cb)
     CallbackDataPair &pair = CALLBACK_GROUP_DATA(GLFWwindowrefreshfun_cb, window);
     jlong result;
     if (callback) {
+        callback = env->NewGlobalRef(callback);
         CALLBACK_SET(pair, INIT_CALLBACK_DATA(callback, "invoke", "(J)V"))
         result = (jlong) glfwSetWindowRefreshCallback(window, [](GLFWwindow *window) {
             LOCK_CALLBACK(GLFWwindowrefreshfun_cb)
@@ -845,12 +845,12 @@ DECL_CALLBACK_GROUP(GLFWwindow*, GLFWdropfun_cb)
 
 [[maybe_unused]] JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowFocusCallback
         (JNIEnv *env, jclass, jlong address, jobject callback) {
-    callback = env->NewGlobalRef(callback);
     auto *window = (GLFWwindow *) address;
     LOCK_CALLBACK(GLFWwindowfocusfun_cb)
     CallbackDataPair &pair = CALLBACK_GROUP_DATA(GLFWwindowfocusfun_cb, window);
     jlong result;
     if (callback) {
+        callback = env->NewGlobalRef(callback);
         CALLBACK_SET(pair, INIT_CALLBACK_DATA(callback, "invoke", "(JI)V"))
         result = (jlong) glfwSetWindowFocusCallback(window, [](GLFWwindow *window, int focused) {
             LOCK_CALLBACK(GLFWwindowfocusfun_cb)
@@ -875,12 +875,12 @@ DECL_CALLBACK_GROUP(GLFWwindow*, GLFWdropfun_cb)
 
 [[maybe_unused]] JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowIconifyCallback
         (JNIEnv *env, jclass, jlong address, jobject callback) {
-    callback = env->NewGlobalRef(callback);
     auto *window = (GLFWwindow *) address;
     LOCK_CALLBACK(GLFWwindowiconifyfun_cb)
     CallbackDataPair &pair = CALLBACK_GROUP_DATA(GLFWwindowiconifyfun_cb, window);
     jlong result;
     if (callback) {
+        callback = env->NewGlobalRef(callback);
         CALLBACK_SET(pair, INIT_CALLBACK_DATA(callback, "invoke", "(JI)V"))
         result = (jlong) glfwSetWindowIconifyCallback(window, [](GLFWwindow *window, int iconified) {
             LOCK_CALLBACK(GLFWwindowiconifyfun_cb)
@@ -905,12 +905,12 @@ DECL_CALLBACK_GROUP(GLFWwindow*, GLFWdropfun_cb)
 
 [[maybe_unused]] JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowMaximizeCallback
         (JNIEnv *env, jclass, jlong address, jobject callback) {
-    callback = env->NewGlobalRef(callback);
     auto *window = (GLFWwindow *) address;
     LOCK_CALLBACK(GLFWwindowmaximizefun_cb)
     CallbackDataPair &pair = CALLBACK_GROUP_DATA(GLFWwindowmaximizefun_cb, window);
     jlong result;
     if (callback) {
+        callback = env->NewGlobalRef(callback);
         CALLBACK_SET(pair, INIT_CALLBACK_DATA(callback, "invoke", "(JI)V"))
         result = (jlong) glfwSetWindowMaximizeCallback(window, [](GLFWwindow *window, int maximized) {
             LOCK_CALLBACK(GLFWwindowmaximizefun_cb)
@@ -935,12 +935,12 @@ DECL_CALLBACK_GROUP(GLFWwindow*, GLFWdropfun_cb)
 
 [[maybe_unused]] JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetFramebufferSizeCallback
         (JNIEnv *env, jclass, jlong address, jobject callback) {
-    callback = env->NewGlobalRef(callback);
     auto *window = (GLFWwindow *) address;
     LOCK_CALLBACK(GLFWframebuffersizefun_cb)
     CallbackDataPair &pair = CALLBACK_GROUP_DATA(GLFWframebuffersizefun_cb, window);
     jlong result;
     if (callback) {
+        callback = env->NewGlobalRef(callback);
         CALLBACK_SET(pair, INIT_CALLBACK_DATA(callback, "invoke", "(JII)V"))
         result = (jlong) glfwSetFramebufferSizeCallback(window, [](GLFWwindow *window, int width, int height) {
             LOCK_CALLBACK(GLFWframebuffersizefun_cb)
@@ -965,12 +965,12 @@ DECL_CALLBACK_GROUP(GLFWwindow*, GLFWdropfun_cb)
 
 [[maybe_unused]] JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowContentScaleCallback
         (JNIEnv *env, jclass, jlong address, jobject callback) {
-    callback = env->NewGlobalRef(callback);
     auto *window = (GLFWwindow *) address;
     LOCK_CALLBACK(GLFWwindowcontentscalefun_cb)
     CallbackDataPair &pair = CALLBACK_GROUP_DATA(GLFWwindowcontentscalefun_cb, window);
     jlong result;
     if (callback) {
+        callback = env->NewGlobalRef(callback);
         CALLBACK_SET(pair, INIT_CALLBACK_DATA(callback, "invoke", "(JFF)V"))
         result = (jlong) glfwSetWindowContentScaleCallback(window, [](GLFWwindow *window, float xscale, float yscale) {
             LOCK_CALLBACK(GLFWwindowcontentscalefun_cb)
@@ -995,12 +995,12 @@ DECL_CALLBACK_GROUP(GLFWwindow*, GLFWdropfun_cb)
 
 [[maybe_unused]] JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetKeyCallback
         (JNIEnv *env, jclass, jlong address, jobject callback) {
-    callback = env->NewGlobalRef(callback);
     auto *window = (GLFWwindow *) address;
     LOCK_CALLBACK(GLFWkeyfun_cb)
     CallbackDataPair &pair = CALLBACK_GROUP_DATA(GLFWkeyfun_cb, window);
     jlong result;
     if (callback) {
+        callback = env->NewGlobalRef(callback);
         CALLBACK_SET(pair, INIT_CALLBACK_DATA(callback, "invoke", "(JIIII)V"))
         result = (jlong) glfwSetKeyCallback(window,
                                             [](GLFWwindow *window, int key, int scancode, int action, int mods) {
@@ -1028,12 +1028,12 @@ DECL_CALLBACK_GROUP(GLFWwindow*, GLFWdropfun_cb)
 
 [[maybe_unused]] JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetCharCallback
         (JNIEnv *env, jclass, jlong address, jobject callback) {
-    callback = env->NewGlobalRef(callback);
     auto *window = (GLFWwindow *) address;
     LOCK_CALLBACK(GLFWcharfun_cb)
     CallbackDataPair &pair = CALLBACK_GROUP_DATA(GLFWcharfun_cb, window);
     jlong result;
     if (callback) {
+        callback = env->NewGlobalRef(callback);
         CALLBACK_SET(pair, INIT_CALLBACK_DATA(callback, "invoke", "(JI)V"))
         result = (jlong) glfwSetCharCallback(window, [](GLFWwindow *window, unsigned int codepoint) {
             LOCK_CALLBACK(GLFWcharfun_cb)
@@ -1058,12 +1058,12 @@ DECL_CALLBACK_GROUP(GLFWwindow*, GLFWdropfun_cb)
 
 [[maybe_unused]] JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetCharModsCallback
         (JNIEnv *env, jclass, jlong address, jobject callback) {
-    callback = env->NewGlobalRef(callback);
     auto *window = (GLFWwindow *) address;
     LOCK_CALLBACK(GLFWcharmodsfun_cb)
     CallbackDataPair &pair = CALLBACK_GROUP_DATA(GLFWcharmodsfun_cb, window);
     jlong result;
     if (callback) {
+        callback = env->NewGlobalRef(callback);
         CALLBACK_SET(pair, INIT_CALLBACK_DATA(callback, "invoke", "(JII)V"))
         result = (jlong) glfwSetCharModsCallback(window, [](GLFWwindow *window, unsigned int codepoint, int mods) {
             LOCK_CALLBACK(GLFWcharmodsfun_cb)
@@ -1088,12 +1088,12 @@ DECL_CALLBACK_GROUP(GLFWwindow*, GLFWdropfun_cb)
 
 [[maybe_unused]] JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetMouseButtonCallback
         (JNIEnv *env, jclass, jlong address, jobject callback) {
-    callback = env->NewGlobalRef(callback);
     auto *window = (GLFWwindow *) address;
     LOCK_CALLBACK(GLFWmousebuttonfun_cb)
     CallbackDataPair &pair = CALLBACK_GROUP_DATA(GLFWmousebuttonfun_cb, window);
     jlong result;
     if (callback) {
+        callback = env->NewGlobalRef(callback);
         CALLBACK_SET(pair, INIT_CALLBACK_DATA(callback, "invoke", "(JIII)V"))
         result = (jlong) glfwSetMouseButtonCallback(window, [](GLFWwindow *window, int button, int action, int mods) {
             LOCK_CALLBACK(GLFWmousebuttonfun_cb)
@@ -1118,12 +1118,12 @@ DECL_CALLBACK_GROUP(GLFWwindow*, GLFWdropfun_cb)
 
 [[maybe_unused]] JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetCursorPosCallback
         (JNIEnv *env, jclass, jlong address, jobject callback) {
-    callback = env->NewGlobalRef(callback);
     auto *window = (GLFWwindow *) address;
     LOCK_CALLBACK(GLFWcursorposfun_cb)
     CallbackDataPair &pair = CALLBACK_GROUP_DATA(GLFWcursorposfun_cb, window);
     jlong result;
     if (callback) {
+        callback = env->NewGlobalRef(callback);
         CALLBACK_SET(pair, INIT_CALLBACK_DATA(callback, "invoke", "(JDD)V"))
         result = (jlong) glfwSetCursorPosCallback(window, [](GLFWwindow *window, double xpos, double ypos) {
             LOCK_CALLBACK(GLFWcursorposfun_cb)
@@ -1148,12 +1148,12 @@ DECL_CALLBACK_GROUP(GLFWwindow*, GLFWdropfun_cb)
 
 [[maybe_unused]] JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetCursorEnterCallback
         (JNIEnv *env, jclass, jlong address, jobject callback) {
-    callback = env->NewGlobalRef(callback);
     auto *window = (GLFWwindow *) address;
     LOCK_CALLBACK(GLFWcursorenterfun_cb)
     CallbackDataPair &pair = CALLBACK_GROUP_DATA(GLFWcursorenterfun_cb, window);
     jlong result;
     if (callback) {
+        callback = env->NewGlobalRef(callback);
         CALLBACK_SET(pair, INIT_CALLBACK_DATA(callback, "invoke", "(JI)V"))
         result = (jlong) glfwSetCursorEnterCallback(window, [](GLFWwindow *window, int entered) {
             LOCK_CALLBACK(GLFWcursorenterfun_cb)
@@ -1178,12 +1178,12 @@ DECL_CALLBACK_GROUP(GLFWwindow*, GLFWdropfun_cb)
 
 [[maybe_unused]] JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetScrollCallback
         (JNIEnv *env, jclass, jlong address, jobject callback) {
-    callback = env->NewGlobalRef(callback);
     auto *window = (GLFWwindow *) address;
     LOCK_CALLBACK(GLFWscrollfun_cb)
     CallbackDataPair &pair = CALLBACK_GROUP_DATA(GLFWscrollfun_cb, window);
     jlong result;
     if (callback) {
+        callback = env->NewGlobalRef(callback);
         CALLBACK_SET(pair, INIT_CALLBACK_DATA(callback, "invoke", "(JDD)V"))
         result = (jlong) glfwSetScrollCallback(window, [](GLFWwindow *window, double xoffset, double yoffset) {
             LOCK_CALLBACK(GLFWscrollfun_cb)
@@ -1208,12 +1208,12 @@ DECL_CALLBACK_GROUP(GLFWwindow*, GLFWdropfun_cb)
 
 [[maybe_unused]] JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetDropCallback
         (JNIEnv *env, jclass, jlong address, jobject callback) {
-    callback = env->NewGlobalRef(callback);
     auto *window = (GLFWwindow *) address;
     LOCK_CALLBACK(GLFWdropfun_cb)
     CallbackDataPair &pair = CALLBACK_GROUP_DATA(GLFWdropfun_cb, window);
     jlong result;
     if (callback) {
+        callback = env->NewGlobalRef(callback);
         CALLBACK_SET(pair, INIT_CALLBACK_DATA(callback, "invoke", "(J[Ljava/lang/String;)V"))
         result = (jlong) glfwSetDropCallback(window, [](GLFWwindow *window, int pathCount, const char *paths[]) {
             LOCK_CALLBACK(GLFWdropfun_cb)

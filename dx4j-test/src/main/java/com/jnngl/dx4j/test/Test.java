@@ -59,6 +59,7 @@ class Test {
         }
       }
       icons[i] = new GLFWimage(icon);
+      icons[i] = new GLFWimage(icons[i].toBufferedImage());
     }
 
     glfwSetWindowIcon(window, icons);
