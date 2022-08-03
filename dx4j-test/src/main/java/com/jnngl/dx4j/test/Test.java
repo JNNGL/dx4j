@@ -4,7 +4,6 @@ import com.jnngl.dx4j.Dx4j;
 
 import static com.jnngl.dx4j.glfw.GLFW.*;
 
-import com.jnngl.dx4j.glfw.GLFWgammaramp;
 import com.jnngl.dx4j.glfw.GLFWmonitor;
 import com.jnngl.dx4j.glfw.GLFWvidmode;
 import com.jnngl.dx4j.glfw.GLFWwindow;
@@ -47,6 +46,19 @@ class Test {
     }
 
     glfwSetMonitorCallback((mon, event) -> System.out.println(glfwGetMonitorName(mon) + ": " + event));
+
+    glfwSetKeyCallback(window, (wnd, key, scancode, action, mods) ->
+        System.out.println("key: key=" + key + " (" + glfwGetKeyName(key, scancode) + "), scancode=" + scancode + ", action=" + action + ", mods=" + mods));
+    glfwSetCharCallback(window, (wnd, codepoint) -> System.out.println("char: codepoint=" + codepoint + " (" + (char) codepoint + ")"));
+    glfwSetCharModsCallback(window, (wnd, codepoint, mods) ->
+        System.out.println("char mods: codepoint=" + codepoint + " (" + (char) codepoint + "), mods=" + mods));
+    glfwSetMouseButtonCallback(window, (wnd, button, action, mods) ->
+        System.out.println("mouse button: button=" + button + ", action=" + action + ", mods=" + mods));
+    glfwSetCursorPosCallback(window, (wnd, xpos, ypos) -> System.out.println("cursor pos: x=" + xpos + ", y=" + ypos));
+    glfwSetCursorEnterCallback(window, (wnd, entered) -> System.out.println("cursor enter: entered=" + entered));
+    glfwSetScrollCallback(window, (wnd, xoffset, yoffset) -> System.out.println("scroll: x=" + xoffset + ", y=" + yoffset));
+    glfwSetDropCallback(window, (wnd, paths) -> System.out.println("drop: paths=" + Arrays.toString(paths)));
+
     glfwSetWindowPosCallback(window, (wnd, xpos, ypos) -> System.out.println("Move: " + xpos + " " + ypos));
     glfwSetWindowSizeCallback(window, (wnd, width, height) -> System.out.println("Resize: " + width + " " + height));
     glfwSetWindowCloseCallback(window, (wnd) -> System.out.println("Close window"));

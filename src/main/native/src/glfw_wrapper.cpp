@@ -19,6 +19,15 @@ DECL_CALLBACK_GROUP(GLFWwindow*, GLFWwindowmaximizefun_cb)
 DECL_CALLBACK_GROUP(GLFWwindow*, GLFWframebuffersizefun_cb)
 DECL_CALLBACK_GROUP(GLFWwindow*, GLFWwindowcontentscalefun_cb)
 DECL_CALLBACK(GLFWmonitorfun_cb)
+DECL_CALLBACK(GLFWjoystickfun_cb)
+DECL_CALLBACK_GROUP(GLFWwindow*, GLFWkeyfun_cb)
+DECL_CALLBACK_GROUP(GLFWwindow*, GLFWcharfun_cb)
+DECL_CALLBACK_GROUP(GLFWwindow*, GLFWcharmodsfun_cb)
+DECL_CALLBACK_GROUP(GLFWwindow*, GLFWmousebuttonfun_cb)
+DECL_CALLBACK_GROUP(GLFWwindow*, GLFWcursorposfun_cb)
+DECL_CALLBACK_GROUP(GLFWwindow*, GLFWcursorenterfun_cb)
+DECL_CALLBACK_GROUP(GLFWwindow*, GLFWscrollfun_cb)
+DECL_CALLBACK_GROUP(GLFWwindow*, GLFWdropfun_cb)
 
 [[maybe_unused]] JNIEXPORT jlong JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwCreateWindow
         (JNIEnv *env, jclass, jint width, jint height, jstring jtitle, jlong monitor, jlong share) {
@@ -407,7 +416,229 @@ DECL_CALLBACK(GLFWmonitorfun_cb)
     env->ReleaseShortArrayElements(blue, (short *) gammaramp.blue, 0);
 }
 
+[[maybe_unused]] JNIEXPORT jint JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetInputMode
+        (JNIEnv *, jclass, jlong window, jint mode) {
+    return glfwGetInputMode((GLFWwindow *) window, mode);
+}
+
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetInputMode
+        (JNIEnv *, jclass, jlong window, jint mode, jint value) {
+    glfwSetInputMode((GLFWwindow *) window, mode, value);
+}
+
+[[maybe_unused]] JNIEXPORT jint JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetKey
+        (JNIEnv *, jclass, jlong window, jint key) {
+    return glfwGetKey((GLFWwindow *) window, key);
+}
+
+[[maybe_unused]] JNIEXPORT jboolean JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetMouseButton
+        (JNIEnv *, jclass, jlong window, jint button) {
+    return glfwGetMouseButton((GLFWwindow *) window, button);
+}
+
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetCursorPos
+        (JNIEnv *env, jclass, jlong window, jdoubleArray jxpos, jdoubleArray jypos) {
+    double xpos, ypos;
+    glfwGetCursorPos((GLFWwindow *) window, &xpos, &ypos);
+    if (CHECK_JARRAY_LENGTH(jxpos)) env->SetDoubleArrayRegion(jxpos, 0, 1, &xpos);
+    if (CHECK_JARRAY_LENGTH(jypos)) env->SetDoubleArrayRegion(jypos, 0, 1, &ypos);
+}
+
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetCursorPos
+        (JNIEnv *, jclass, jlong window, jdouble xpos, jdouble ypos) {
+    glfwSetCursorPos((GLFWwindow *) window, xpos, ypos);
+}
+
+[[maybe_unused]] JNIEXPORT jlong JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwCreateCursor
+        (JNIEnv *env, jclass, jint width, jint height, jbyteArray jpixels, jint xhot, jint yhot) {
+    GLFWimage image{};
+    image.width = width;
+    image.height = height;
+    jbyte *pixels = env->GetByteArrayElements(jpixels, nullptr);
+    image.pixels = (unsigned char *) pixels;
+    GLFWcursor *cursor = glfwCreateCursor(&image, xhot, yhot);
+    env->ReleaseByteArrayElements(jpixels, pixels, 0);
+    return (jlong) cursor;
+}
+
+[[maybe_unused]] JNIEXPORT jlong JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwCreateStandardCursor
+        (JNIEnv *, jclass, jint shape) {
+    return (jlong) glfwCreateStandardCursor(shape);
+}
+
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwDestroyCursor
+        (JNIEnv *, jclass, jlong cursor) {
+    glfwDestroyCursor((GLFWcursor *) cursor);
+}
+
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetCursor
+        (JNIEnv *, jclass, jlong window, jlong cursor) {
+    glfwSetCursor((GLFWwindow *) window, (GLFWcursor *) cursor);
+}
+
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetJoystickUserPointer
+        (JNIEnv *, jclass, jint jid, jlong pointer) {
+    glfwSetJoystickUserPointer(jid, (void *) pointer);
+}
+
+[[maybe_unused]] JNIEXPORT jlong JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetJoystickUserPointer
+        (JNIEnv *, jclass, jint jid) {
+    return (jlong) glfwGetJoystickUserPointer(jid);
+}
+
+[[maybe_unused]] JNIEXPORT jboolean JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetGamepadState
+        (JNIEnv *env, jclass, jint jid, jbooleanArray buttons, jfloatArray axes) {
+    GLFWgamepadstate gamepad;
+    int result = glfwGetGamepadState(jid, &gamepad);
+    if (!result) {
+        return false;
+    }
+    env->SetBooleanArrayRegion(buttons, 0, 15, gamepad.buttons);
+    env->SetFloatArrayRegion(axes, 0, 6, gamepad.axes);
+    return true;
+}
+
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetClipboardString
+        (JNIEnv *env, jclass, jlong window, jstring jstring) {
+    const char *string = env->GetStringUTFChars(jstring, nullptr);
+    glfwSetClipboardString((GLFWwindow *) window, string);
+    env->ReleaseStringUTFChars(jstring, string);
+}
+
+[[maybe_unused]] JNIEXPORT jstring JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetClipboardString
+        (JNIEnv *env, jclass, jlong window) {
+    return env->NewStringUTF(glfwGetClipboardString((GLFWwindow *) window));
+}
+
+[[maybe_unused]] JNIEXPORT jboolean JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwRawMouseMotionSupported
+        (JNIEnv *, jclass) {
+    return glfwRawMouseMotionSupported();
+}
+
+[[maybe_unused]] JNIEXPORT jstring JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwGetKeyName
+        (JNIEnv *env, jclass, jint key, jint scancode) {
+    return env->NewStringUTF(glfwGetKeyName(key, scancode));
+}
+
+[[maybe_unused]] JNIEXPORT jint JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwGetKeyScancode
+        (JNIEnv *, jclass, jint key) {
+    return glfwGetKeyScancode(key);
+}
+
+[[maybe_unused]] JNIEXPORT jboolean JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwJoystickPresent
+        (JNIEnv *, jclass, jint jid) {
+    return glfwJoystickPresent(jid);
+}
+
+[[maybe_unused]] JNIEXPORT jfloatArray JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwGetJoystickAxes
+        (JNIEnv *env, jclass, jint jid) {
+    int count;
+    const float *axes = glfwGetJoystickAxes(jid, &count);
+    if (!axes) {
+        return nullptr;
+    }
+    jfloatArray axesArr = env->NewFloatArray(count);
+    env->SetFloatArrayRegion(axesArr, 0, count, axes);
+    return axesArr;
+}
+
+[[maybe_unused]] JNIEXPORT jbyteArray JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwGetJoystickButtons
+        (JNIEnv *env, jclass, jint jid) {
+    int count;
+    const unsigned char *buttons = glfwGetJoystickButtons(jid, &count);
+    if (!buttons) {
+        return nullptr;
+    }
+    jbyteArray buttonsArr = env->NewByteArray(count);
+    env->SetByteArrayRegion(buttonsArr, 0, count, (const jbyte *) buttons);
+    return buttonsArr;
+}
+
+[[maybe_unused]] JNIEXPORT jbyteArray JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwGetJoystickHats
+        (JNIEnv *env, jclass, jint jid) {
+    int count;
+    const unsigned char *hats = glfwGetJoystickHats(jid, &count);
+    if (!hats) {
+        return nullptr;
+    }
+    jbyteArray hatsArr = env->NewByteArray(count);
+    env->SetByteArrayRegion(hatsArr, 0, count, (const jbyte *) hats);
+    return hatsArr;
+}
+
+[[maybe_unused]] JNIEXPORT jstring JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwGetJoystickName
+        (JNIEnv *env, jclass, jint jid) {
+    return env->NewStringUTF(glfwGetJoystickName(jid));
+}
+
+[[maybe_unused]] JNIEXPORT jstring JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwGetJoystickGUID
+        (JNIEnv *env, jclass, jint jid) {
+    return env->NewStringUTF(glfwGetJoystickGUID(jid));
+}
+
+[[maybe_unused]] JNIEXPORT jboolean JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwJoystickIsGamepad
+        (JNIEnv *, jclass, jint jid) {
+    return glfwJoystickIsGamepad(jid);
+}
+
+[[maybe_unused]] JNIEXPORT jboolean JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwUpdateGamepadMappings
+        (JNIEnv *env, jclass, jstring jstring) {
+    const char *string = env->GetStringUTFChars(jstring, nullptr);
+    jboolean result = glfwUpdateGamepadMappings(string);
+    env->ReleaseStringUTFChars(jstring, string);
+    return result;
+}
+
+[[maybe_unused]] JNIEXPORT jstring JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwGetGamepadName
+        (JNIEnv *env, jclass, jint jid) {
+    return env->NewStringUTF(glfwGetGamepadName(jid));
+}
+
+[[maybe_unused]] JNIEXPORT jdouble JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwGetTime
+        (JNIEnv *, jclass) {
+    return glfwGetTime();
+}
+
+[[maybe_unused]] JNIEXPORT jlong JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwGetTimerValue
+        (JNIEnv *, jclass) {
+    return (jlong) glfwGetTimerValue();
+}
+
+[[maybe_unused]] JNIEXPORT jlong JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwGetTimerFrequency
+        (JNIEnv *, jclass) {
+    return (jlong) glfwGetTimerFrequency();
+}
+
 //// JAVA CALLBACKS ////
+
+[[maybe_unused]] JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwSetJoystickCallback
+        (JNIEnv *env, jclass, jobject callback) {
+    callback = env->NewGlobalRef(callback);
+    LOCK_CALLBACK(GLFWjoystickfun_cb)
+    CallbackDataPair &pair = CALLBACK_DATA(GLFWjoystickfun_cb);
+    jlong result;
+    if (callback) {
+        CALLBACK_SET(pair, INIT_CALLBACK_DATA(callback, "invoke", "(II)V"))
+        result = (jlong) glfwSetJoystickCallback([](int jid, int event) {
+            LOCK_CALLBACK(GLFWjoystickfun_cb)
+            CallbackData callback = CALLBACK_DATA(GLFWjoystickfun_cb).current;
+            if (callback.isValid()) {
+                callback.env->CallVoidMethod(
+                        callback.instance, callback.callback,
+                        (jint) jid, (jint) event);
+            }
+            UNLOCK_CALLBACK(GLFWjoystickfun_cb)
+        });
+    } else {
+        CALLBACK_SET(pair, {})
+        result = (jlong) glfwSetJoystickCallback(nullptr);
+    }
+    UNLOCK_CALLBACK(GLFWjoystickfun_cb)
+    if (!result) {
+        return nullptr;
+    }
+    return pair.old;
+}
 
 [[maybe_unused]] JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwSetMonitorCallback
         (JNIEnv *env, jclass, jobject callback) {
@@ -417,7 +648,7 @@ DECL_CALLBACK(GLFWmonitorfun_cb)
     jlong result;
     if (callback) {
         CALLBACK_SET(pair, INIT_CALLBACK_DATA(callback, "invoke", "(JI)V"))
-        result = (jlong) glfwSetMonitorCallback([](GLFWmonitor* monitor, int event) {
+        result = (jlong) glfwSetMonitorCallback([](GLFWmonitor *monitor, int event) {
             LOCK_CALLBACK(GLFWmonitorfun_cb)
             CallbackData callback = CALLBACK_DATA(GLFWmonitorfun_cb).current;
             if (callback.isValid()) {
@@ -731,6 +962,253 @@ DECL_CALLBACK(GLFWmonitorfun_cb)
         result = (jlong) glfwSetWindowContentScaleCallback(window, nullptr);
     }
     UNLOCK_CALLBACK(GLFWwindowcontentscalefun_cb)
+    if (!result) {
+        return nullptr;
+    }
+    return pair.old;
+}
+
+[[maybe_unused]] JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetKeyCallback
+        (JNIEnv *env, jclass, jlong address, jobject callback) {
+    callback = env->NewGlobalRef(callback);
+    auto *window = (GLFWwindow *) address;
+    LOCK_CALLBACK(GLFWkeyfun_cb)
+    CallbackDataPair &pair = CALLBACK_GROUP_DATA(GLFWkeyfun_cb, window);
+    jlong result;
+    if (callback) {
+        CALLBACK_SET(pair, INIT_CALLBACK_DATA(callback, "invoke", "(JIIII)V"))
+        result = (jlong) glfwSetKeyCallback(window, [](GLFWwindow *window, int key, int scancode, int action, int mods) {
+            LOCK_CALLBACK(GLFWkeyfun_cb)
+            CallbackData callback = CALLBACK_GROUP_DATA(GLFWkeyfun_cb, window).current;
+            if (callback.isValid()) {
+                callback.env->CallVoidMethod(
+                        callback.instance, callback.callback,
+                        (jlong) window, (jint) key, (jint) scancode, (jint) action, (jint) mods);
+            }
+            UNLOCK_CALLBACK(GLFWkeyfun_cb)
+        });
+    } else {
+        CALLBACK_SET(pair, {})
+        result = (jlong) glfwSetKeyCallback(window, nullptr);
+    }
+    UNLOCK_CALLBACK(GLFWkeyfun_cb)
+    if (!result) {
+        return nullptr;
+    }
+    return pair.old;
+}
+
+[[maybe_unused]] JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetCharCallback
+        (JNIEnv *env, jclass, jlong address, jobject callback) {
+    callback = env->NewGlobalRef(callback);
+    auto *window = (GLFWwindow *) address;
+    LOCK_CALLBACK(GLFWcharfun_cb)
+    CallbackDataPair &pair = CALLBACK_GROUP_DATA(GLFWcharfun_cb, window);
+    jlong result;
+    if (callback) {
+        CALLBACK_SET(pair, INIT_CALLBACK_DATA(callback, "invoke", "(JI)V"))
+        result = (jlong) glfwSetCharCallback(window, [](GLFWwindow *window, unsigned int codepoint) {
+            LOCK_CALLBACK(GLFWcharfun_cb)
+            CallbackData callback = CALLBACK_GROUP_DATA(GLFWcharfun_cb, window).current;
+            if (callback.isValid()) {
+                callback.env->CallVoidMethod(
+                        callback.instance, callback.callback,
+                        (jlong) window, (jint) codepoint);
+            }
+            UNLOCK_CALLBACK(GLFWcharfun_cb)
+        });
+    } else {
+        CALLBACK_SET(pair, {})
+        result = (jlong) glfwSetCharCallback(window, nullptr);
+    }
+    UNLOCK_CALLBACK(GLFWcharfun_cb)
+    if (!result) {
+        return nullptr;
+    }
+    return pair.old;
+}
+
+[[maybe_unused]] JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetCharModsCallback
+        (JNIEnv *env, jclass, jlong address, jobject callback) {
+    callback = env->NewGlobalRef(callback);
+    auto *window = (GLFWwindow *) address;
+    LOCK_CALLBACK(GLFWcharmodsfun_cb)
+    CallbackDataPair &pair = CALLBACK_GROUP_DATA(GLFWcharmodsfun_cb, window);
+    jlong result;
+    if (callback) {
+        CALLBACK_SET(pair, INIT_CALLBACK_DATA(callback, "invoke", "(JII)V"))
+        result = (jlong) glfwSetCharModsCallback(window, [](GLFWwindow *window, unsigned int codepoint, int mods) {
+            LOCK_CALLBACK(GLFWcharmodsfun_cb)
+            CallbackData callback = CALLBACK_GROUP_DATA(GLFWcharmodsfun_cb, window).current;
+            if (callback.isValid()) {
+                callback.env->CallVoidMethod(
+                        callback.instance, callback.callback,
+                        (jlong) window, (jint) codepoint, (jint) mods);
+            }
+            UNLOCK_CALLBACK(GLFWcharmodsfun_cb)
+        });
+    } else {
+        CALLBACK_SET(pair, {})
+        result = (jlong) glfwSetCharModsCallback(window, nullptr);
+    }
+    UNLOCK_CALLBACK(GLFWcharmodsfun_cb)
+    if (!result) {
+        return nullptr;
+    }
+    return pair.old;
+}
+
+[[maybe_unused]] JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetMouseButtonCallback
+        (JNIEnv *env, jclass, jlong address, jobject callback) {
+    callback = env->NewGlobalRef(callback);
+    auto *window = (GLFWwindow *) address;
+    LOCK_CALLBACK(GLFWmousebuttonfun_cb)
+    CallbackDataPair &pair = CALLBACK_GROUP_DATA(GLFWmousebuttonfun_cb, window);
+    jlong result;
+    if (callback) {
+        CALLBACK_SET(pair, INIT_CALLBACK_DATA(callback, "invoke", "(JIII)V"))
+        result = (jlong) glfwSetMouseButtonCallback(window, [](GLFWwindow *window, int button, int action, int mods) {
+            LOCK_CALLBACK(GLFWmousebuttonfun_cb)
+            CallbackData callback = CALLBACK_GROUP_DATA(GLFWmousebuttonfun_cb, window).current;
+            if (callback.isValid()) {
+                callback.env->CallVoidMethod(
+                        callback.instance, callback.callback,
+                        (jlong) window, (jint) button, (jint) action, (jint) mods);
+            }
+            UNLOCK_CALLBACK(GLFWmousebuttonfun_cb)
+        });
+    } else {
+        CALLBACK_SET(pair, {})
+        result = (jlong) glfwSetMouseButtonCallback(window, nullptr);
+    }
+    UNLOCK_CALLBACK(GLFWmousebuttonfun_cb)
+    if (!result) {
+        return nullptr;
+    }
+    return pair.old;
+}
+
+[[maybe_unused]] JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetCursorPosCallback
+        (JNIEnv *env, jclass, jlong address, jobject callback) {
+    callback = env->NewGlobalRef(callback);
+    auto *window = (GLFWwindow *) address;
+    LOCK_CALLBACK(GLFWcursorposfun_cb)
+    CallbackDataPair &pair = CALLBACK_GROUP_DATA(GLFWcursorposfun_cb, window);
+    jlong result;
+    if (callback) {
+        CALLBACK_SET(pair, INIT_CALLBACK_DATA(callback, "invoke", "(JDD)V"))
+        result = (jlong) glfwSetCursorPosCallback(window, [](GLFWwindow *window, double xpos, double ypos) {
+            LOCK_CALLBACK(GLFWcursorposfun_cb)
+            CallbackData callback = CALLBACK_GROUP_DATA(GLFWcursorposfun_cb, window).current;
+            if (callback.isValid()) {
+                callback.env->CallVoidMethod(
+                        callback.instance, callback.callback,
+                        (jlong) window, (jdouble) xpos, (jdouble) ypos);
+            }
+            UNLOCK_CALLBACK(GLFWcursorposfun_cb)
+        });
+    } else {
+        CALLBACK_SET(pair, {})
+        result = (jlong) glfwSetCursorPosCallback(window, nullptr);
+    }
+    UNLOCK_CALLBACK(GLFWcursorposfun_cb)
+    if (!result) {
+        return nullptr;
+    }
+    return pair.old;
+}
+
+[[maybe_unused]] JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetCursorEnterCallback
+        (JNIEnv *env, jclass, jlong address, jobject callback) {
+    callback = env->NewGlobalRef(callback);
+    auto *window = (GLFWwindow *) address;
+    LOCK_CALLBACK(GLFWcursorenterfun_cb)
+    CallbackDataPair &pair = CALLBACK_GROUP_DATA(GLFWcursorenterfun_cb, window);
+    jlong result;
+    if (callback) {
+        CALLBACK_SET(pair, INIT_CALLBACK_DATA(callback, "invoke", "(JI)V"))
+        result = (jlong) glfwSetCursorEnterCallback(window, [](GLFWwindow *window, int entered) {
+            LOCK_CALLBACK(GLFWcursorenterfun_cb)
+            CallbackData callback = CALLBACK_GROUP_DATA(GLFWcursorenterfun_cb, window).current;
+            if (callback.isValid()) {
+                callback.env->CallVoidMethod(
+                        callback.instance, callback.callback,
+                        (jlong) window, (jint) entered);
+            }
+            UNLOCK_CALLBACK(GLFWcursorenterfun_cb)
+        });
+    } else {
+        CALLBACK_SET(pair, {})
+        result = (jlong) glfwSetCursorEnterCallback(window, nullptr);
+    }
+    UNLOCK_CALLBACK(GLFWcursorenterfun_cb)
+    if (!result) {
+        return nullptr;
+    }
+    return pair.old;
+}
+
+[[maybe_unused]] JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetScrollCallback
+        (JNIEnv *env, jclass, jlong address, jobject callback) {
+    callback = env->NewGlobalRef(callback);
+    auto *window = (GLFWwindow *) address;
+    LOCK_CALLBACK(GLFWscrollfun_cb)
+    CallbackDataPair &pair = CALLBACK_GROUP_DATA(GLFWscrollfun_cb, window);
+    jlong result;
+    if (callback) {
+        CALLBACK_SET(pair, INIT_CALLBACK_DATA(callback, "invoke", "(JDD)V"))
+        result = (jlong) glfwSetScrollCallback(window, [](GLFWwindow *window, double xoffset, double yoffset) {
+            LOCK_CALLBACK(GLFWscrollfun_cb)
+            CallbackData callback = CALLBACK_GROUP_DATA(GLFWscrollfun_cb, window).current;
+            if (callback.isValid()) {
+                callback.env->CallVoidMethod(
+                        callback.instance, callback.callback,
+                        (jlong) window, (jdouble) xoffset, (jdouble) yoffset);
+            }
+            UNLOCK_CALLBACK(GLFWscrollfun_cb)
+        });
+    } else {
+        CALLBACK_SET(pair, {})
+        result = (jlong) glfwSetScrollCallback(window, nullptr);
+    }
+    UNLOCK_CALLBACK(GLFWscrollfun_cb)
+    if (!result) {
+        return nullptr;
+    }
+    return pair.old;
+}
+
+[[maybe_unused]] JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetDropCallback
+        (JNIEnv *env, jclass, jlong address, jobject callback) {
+    callback = env->NewGlobalRef(callback);
+    auto *window = (GLFWwindow *) address;
+    LOCK_CALLBACK(GLFWdropfun_cb)
+    CallbackDataPair &pair = CALLBACK_GROUP_DATA(GLFWdropfun_cb, window);
+    jlong result;
+    if (callback) {
+        CALLBACK_SET(pair, INIT_CALLBACK_DATA(callback, "invoke", "(J[Ljava/lang/String;)V"))
+        result = (jlong) glfwSetDropCallback(window, [](GLFWwindow *window, int pathCount, const char* paths[]) {
+            LOCK_CALLBACK(GLFWdropfun_cb)
+            CallbackData callback = CALLBACK_GROUP_DATA(GLFWdropfun_cb, window).current;
+            if (callback.isValid()) {
+                jobjectArray jpaths = callback.env->NewObjectArray(pathCount,
+                                                                   callback.env->FindClass("java/lang/String"),
+                                                                   nullptr);
+                for (int i = 0; i < pathCount; i++) {
+                    callback.env->SetObjectArrayElement(jpaths, i, callback.env->NewStringUTF(paths[i]));
+                }
+                callback.env->CallVoidMethod(
+                        callback.instance, callback.callback,
+                        (jlong) window, jpaths);
+                callback.env->DeleteLocalRef(jpaths);
+            }
+            UNLOCK_CALLBACK(GLFWdropfun_cb)
+        });
+    } else {
+        CALLBACK_SET(pair, {})
+        result = (jlong) glfwSetDropCallback(window, nullptr);
+    }
+    UNLOCK_CALLBACK(GLFWdropfun_cb)
     if (!result) {
         return nullptr;
     }

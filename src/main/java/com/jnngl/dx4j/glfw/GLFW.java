@@ -426,6 +426,53 @@ public class GLFW {
 
   private static native void nglfwSetGammaRamp(long monitor, short[] red, short[] green, short[] blue);
 
+  private static native int nglfwGetInputMode(long window, int mode);
+
+  private static native void nglfwSetInputMode(long window, int mode, int value);
+
+  private static native int nglfwGetKey(long window, int key);
+
+  private static native boolean nglfwGetMouseButton(long window, int button);
+
+  private static native void nglfwGetCursorPos(long window, double[] xpos, double[] ypos);
+
+  private static native void nglfwSetCursorPos(long window, double xpos, double ypos);
+
+  private static native long nglfwCreateCursor(int width, int height, byte[] pixels, int xhot, int yhot);
+
+  private static native long nglfwCreateStandardCursor(int shape);
+
+  private static native void nglfwDestroyCursor(long cursor);
+
+  private static native void nglfwSetCursor(long window, long cursor);
+
+  private static native GLFWkeyfun nglfwSetKeyCallback(long window, GLFWkeyfun callback);
+
+  private static native GLFWcharfun nglfwSetCharCallback(long window, GLFWcharfun callback);
+
+  private static native GLFWcharmodsfun nglfwSetCharModsCallback(long window, GLFWcharmodsfun callback);
+
+  private static native GLFWmousebuttonfun nglfwSetMouseButtonCallback(long window, GLFWmousebuttonfun callback);
+
+  private static native GLFWcursorposfun nglfwSetCursorPosCallback(long window, GLFWcursorposfun callback);
+
+  private static native GLFWcursorenterfun nglfwSetCursorEnterCallback(long window, GLFWcursorenterfun callback);
+
+  private static native GLFWscrollfun nglfwSetScrollCallback(long window, GLFWscrollfun callback);
+
+  private static native GLFWdropfun nglfwSetDropCallback(long window, GLFWdropfun callback);
+
+  private static native void nglfwSetJoystickUserPointer(int jid, long pointer);
+
+  private static native long nglfwGetJoystickUserPointer(int jid);
+
+  private static native boolean nglfwGetGamepadState(int jid, boolean[] buttons, float[] axes);
+
+  private static native void nglfwSetClipboardString(long window, String string);
+
+  private static native String nglfwGetClipboardString(long window);
+
+
   public static native int glfwInit();
 
   public static native void glfwTerminate();
@@ -455,6 +502,39 @@ public class GLFW {
   public static native void glfwPostEmptyEvent();
 
   public static native GLFWmonitorfun glfwSetMonitorCallback(GLFWmonitorfun callback);
+
+  public static native boolean glfwRawMouseMotionSupported();
+
+  public static native String glfwGetKeyName(int key, int scancode);
+
+  public static native int glfwGetKeyScancode(int key);
+
+  public static native boolean glfwJoystickPresent(int jid);
+
+  public static native float[] glfwGetJoystickAxes(int jid);
+
+  public static native byte[] glfwGetJoystickButtons(int jid);
+
+  public static native byte[] glfwGetJoystickHats(int jid);
+
+  public static native String glfwGetJoystickName(int jid);
+
+  public static native String glfwGetJoystickGUID(int jid);
+
+  public static native boolean glfwJoystickIsGamepad(int jid);
+
+  public static native GLFWjoystickfun glfwSetJoystickCallback(GLFWjoystickfun callback);
+
+  public static native boolean glfwUpdateGamepadMappings(String string);
+
+  public static native String glfwGetGamepadName(int jid);
+
+  public static native double glfwGetTime();
+
+  public static native long glfwGetTimerValue();
+
+  public static native long glfwGetTimerFrequency();
+
 
   public static GLFWwindow glfwCreateWindow(int width, int height, String title, GLFWmonitor monitor, GLFWwindow share) {
     title = Objects.requireNonNullElse(title, "");
@@ -600,7 +680,7 @@ public class GLFW {
 
   public static void glfwSetWindowUserPointer(GLFWwindow window, Pointer pointer) {
     window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
-    pointer = Objects.requireNonNullElseGet(window, () -> new Pointer(0));
+    pointer = Objects.requireNonNullElseGet(pointer, () -> new Pointer(0));
     nglfwSetWindowUserPointer(window.getAddress(), pointer.getAddress());
   }
 
@@ -748,6 +828,120 @@ public class GLFW {
     Objects.requireNonNull(gammaRamp);
     monitor = Objects.requireNonNullElse(monitor, GLFWmonitor.NULL);
     nglfwSetGammaRamp(monitor.getAddress(), gammaRamp.getRed(), gammaRamp.getGreen(), gammaRamp.getBlue());
+  }
+
+  public static int glfwGetInputMode(GLFWwindow window, int mode) {
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
+    return nglfwGetInputMode(window.getAddress(), mode);
+  }
+
+  public static void glfwSetInputMode(GLFWwindow window, int mode, int value) {
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
+    nglfwSetInputMode(window.getAddress(), mode, value);
+  }
+
+  public static int glfwGetKey(GLFWwindow window, int key) {
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
+    return nglfwGetKey(window.getAddress(), key);
+  }
+
+  public static boolean glfwGetMouseButton(GLFWwindow window, int button) {
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
+    return nglfwGetMouseButton(window.getAddress(), button);
+  }
+
+  public static void glfwGetCursorPos(GLFWwindow window, double[] xpos, double[] ypos) {
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
+    nglfwGetCursorPos(window.getAddress(), xpos, ypos);
+  }
+
+  public static void glfwSetCursorPos(GLFWwindow window, double xpos, double ypos) {
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
+    nglfwSetCursorPos(window.getAddress(), xpos, ypos);
+  }
+
+  public static GLFWcursor glfwCreateCursor(GLFWimage image, int xhot, int yhot) {
+    Objects.requireNonNull(image);
+    return new GLFWcursor(nglfwCreateCursor(image.getWidth(), image.getHeight(), image.getPixels(), xhot, yhot));
+  }
+
+  public static GLFWcursor glfwCreateStandardCursor(int shape) {
+    return new GLFWcursor(nglfwCreateStandardCursor(shape));
+  }
+
+  public static void glfwDestroyCursor(GLFWcursor cursor) {
+    cursor = Objects.requireNonNullElseGet(cursor, () -> new GLFWcursor(0));
+    nglfwDestroyCursor(cursor.getAddress());
+  }
+
+  public static void glfwSetCursor(GLFWwindow window, GLFWcursor cursor) {
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
+    cursor = Objects.requireNonNullElseGet(cursor, () -> new GLFWcursor(0));
+    nglfwSetCursor(window.getAddress(), cursor.getAddress());
+  }
+
+  public static GLFWkeyfun glfwSetKeyCallback(GLFWwindow window, GLFWkeyfun callback) {
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
+    return nglfwSetKeyCallback(window.getAddress(), callback);
+  }
+
+  public static GLFWcharfun glfwSetCharCallback(GLFWwindow window, GLFWcharfun callback) {
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
+    return nglfwSetCharCallback(window.getAddress(), callback);
+  }
+
+  public static GLFWcharmodsfun glfwSetCharModsCallback(GLFWwindow window, GLFWcharmodsfun callback) {
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
+    return nglfwSetCharModsCallback(window.getAddress(), callback);
+  }
+
+  public static GLFWmousebuttonfun glfwSetMouseButtonCallback(GLFWwindow window, GLFWmousebuttonfun callback) {
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
+    return nglfwSetMouseButtonCallback(window.getAddress(), callback);
+  }
+
+  public static GLFWcursorposfun glfwSetCursorPosCallback(GLFWwindow window, GLFWcursorposfun callback) {
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
+    return nglfwSetCursorPosCallback(window.getAddress(), callback);
+  }
+
+  public static GLFWcursorenterfun glfwSetCursorEnterCallback(GLFWwindow window, GLFWcursorenterfun callback) {
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
+    return nglfwSetCursorEnterCallback(window.getAddress(), callback);
+  }
+
+  public static GLFWscrollfun glfwSetScrollCallback(GLFWwindow window, GLFWscrollfun callback) {
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
+    return nglfwSetScrollCallback(window.getAddress(), callback);
+  }
+
+  public static GLFWdropfun glfwSetDropCallback(GLFWwindow window, GLFWdropfun callback) {
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
+    return nglfwSetDropCallback(window.getAddress(), callback);
+  }
+
+  public static void glfwSetJoystickUserPointer(int jid, Pointer pointer) {
+    pointer = Objects.requireNonNullElseGet(pointer, () -> new Pointer(0));
+    nglfwSetJoystickUserPointer(jid, pointer.getAddress());
+  }
+
+  public static Pointer glfwGetJoystickUserPointer(int jid) {
+    return new Pointer(nglfwGetJoystickUserPointer(jid));
+  }
+
+  public static boolean glfwGetGamepadState(int jid, GLFWgamepadstate gamepad) {
+    gamepad = Objects.requireNonNullElse(gamepad, new GLFWgamepadstate());
+    return nglfwGetGamepadState(jid, gamepad.getButtons(), gamepad.getAxes());
+  }
+
+  public static void glfwSetClipboardString(GLFWwindow window, String string) {
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
+    nglfwSetClipboardString(window.getAddress(), string);
+  }
+
+  public static String glfwGetClipboardString(GLFWwindow window) {
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
+    return nglfwGetClipboardString(window.getAddress());
   }
 
 }
