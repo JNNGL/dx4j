@@ -1,6 +1,7 @@
 package com.jnngl.dx4j.glfw;
 
 import com.jnngl.dx4j.common.Pointer;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class GLFW {
@@ -391,6 +392,40 @@ public class GLFW {
 
   private static native void nglfwSwapBuffers(long window);
 
+  private static native String nglfwGetWin32Adapter(long monitor);
+
+  private static native String nglfwGetWin32Monitor(long monitor);
+
+  private static native long nglfwGetWin32Window(long window);
+
+  private static native long[] nglfwGetMonitors();
+
+  private static native long nglfwGetPrimaryMonitor();
+
+  private static native void nglfwGetMonitorPos(long monitor, int[] xpos, int[] ypos);
+
+  private static native void nglfwGetMonitorWorkarea(long monitor, int[] xpos, int[] ypos, int[] width, int[] height);
+
+  private static native void nglfwGetMonitorPhysicalSize(long monitor, int[] widthMM, int[] heightMM);
+
+  private static native void nglfwGetMonitorContentScale(long monitor, float[] xscale, float[] yscale);
+
+  private static native String nglfwGetMonitorName(long monitor);
+
+  private static native void nglfwSetMonitorUserPointer(long monitor, long pointer);
+
+  private static native long nglfwGetMonitorUserPointer(long monitor);
+
+  private static native long nglfwGetVideoModes(long monitor, int[] count);
+
+  private static native long nglfwGetVideoMode(long monitor);
+
+  private static native void nglfwSetGamma(long monitor, float gamma);
+
+  private static native long nglfwGetGammaRamp(long monitor);
+
+  private static native void nglfwSetGammaRamp(long monitor, short[] red, short[] green, short[] blue);
+
   public static native int glfwInit();
 
   public static native void glfwTerminate();
@@ -418,6 +453,8 @@ public class GLFW {
   public static native void glfwWaitEventsTimeout(double timeout);
 
   public static native void glfwPostEmptyEvent();
+
+  public static native GLFWmonitorfun glfwSetMonitorCallback(GLFWmonitorfun callback);
 
   public static GLFWwindow glfwCreateWindow(int width, int height, String title, GLFWmonitor monitor, GLFWwindow share) {
     title = Objects.requireNonNullElse(title, "");
@@ -547,6 +584,7 @@ public class GLFW {
 
   public static void glfwSetWindowMonitor(GLFWwindow window, GLFWmonitor monitor, int xpos, int ypos, int width, int height, int refreshRate) {
     window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
+    monitor = Objects.requireNonNullElse(monitor, GLFWmonitor.NULL);
     nglfwSetWindowMonitor(window.getAddress(), monitor.getAddress(), xpos, ypos, width, height, refreshRate);
   }
 
@@ -562,6 +600,7 @@ public class GLFW {
 
   public static void glfwSetWindowUserPointer(GLFWwindow window, Pointer pointer) {
     window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
+    pointer = Objects.requireNonNullElseGet(window, () -> new Pointer(0));
     nglfwSetWindowUserPointer(window.getAddress(), pointer.getAddress());
   }
 
@@ -576,39 +615,139 @@ public class GLFW {
   }
 
   public static GLFWwindowposfun glfwSetWindowPosCallback(GLFWwindow window, GLFWwindowposfun callback) {
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
     return nglfwSetWindowPosCallback(window.getAddress(), callback);
   }
 
   public static GLFWwindowsizefun glfwSetWindowSizeCallback(GLFWwindow window, GLFWwindowsizefun callback) {
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
     return nglfwSetWindowSizeCallback(window.getAddress(), callback);
   }
 
   public static GLFWwindowclosefun glfwSetWindowCloseCallback(GLFWwindow window, GLFWwindowclosefun callback) {
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
     return nglfwSetWindowCloseCallback(window.getAddress(), callback);
   }
 
   public static GLFWwindowrefreshfun glfwSetWindowRefreshCallback(GLFWwindow window, GLFWwindowrefreshfun callback) {
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
     return nglfwSetWindowRefreshCallback(window.getAddress(), callback);
   }
 
   public static GLFWwindowfocusfun glfwSetWindowFocusCallback(GLFWwindow window, GLFWwindowfocusfun callback) {
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
     return nglfwSetWindowFocusCallback(window.getAddress(), callback);
   }
 
   public static GLFWwindowiconifyfun glfwSetWindowIconifyCallback(GLFWwindow window, GLFWwindowiconifyfun callback) {
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
     return nglfwSetWindowIconifyCallback(window.getAddress(), callback);
   }
 
   public static GLFWwindowmaximizefun glfwSetWindowMaximizeCallback(GLFWwindow window, GLFWwindowmaximizefun callback) {
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
     return nglfwSetWindowMaximizeCallback(window.getAddress(), callback);
   }
 
   public static GLFWframebuffersizefun glfwSetFramebufferSizeCallback(GLFWwindow window, GLFWframebuffersizefun callback) {
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
     return nglfwSetFramebufferSizeCallback(window.getAddress(), callback);
   }
 
   public static GLFWwindowcontentscalefun glfwSetWindowContentScaleCallback(GLFWwindow window, GLFWwindowcontentscalefun callback) {
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
     return nglfwSetWindowContentScaleCallback(window.getAddress(), callback);
+  }
+
+  public static String glfwGetWin32Adapter(GLFWmonitor monitor) {
+    monitor = Objects.requireNonNullElse(monitor, GLFWmonitor.NULL);
+    return nglfwGetWin32Adapter(monitor.getAddress());
+  }
+
+  public static String glfwGetWin32Monitor(GLFWmonitor monitor) {
+    monitor = Objects.requireNonNullElse(monitor, GLFWmonitor.NULL);
+    return nglfwGetWin32Monitor(monitor.getAddress());
+  }
+
+  // TODO:
+  // public static HWND glfwGetWin32Window(GLFWwindow window) {
+  //   window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
+  //   return new HWND(nglfwGetWin32Window(window.getAddress()));
+  // }
+
+  public static GLFWmonitor[] glfwGetMonitors() {
+    long[] monitors = nglfwGetMonitors();
+    if (monitors == null) {
+      return null;
+    }
+    return Arrays.stream(monitors).mapToObj(GLFWmonitor::new).toArray(GLFWmonitor[]::new);
+  }
+
+  public static GLFWmonitor glfwGetPrimaryMonitor() {
+    return new GLFWmonitor(nglfwGetPrimaryMonitor());
+  }
+
+  public static void glfwGetMonitorPos(GLFWmonitor monitor, int[] xpos, int[] ypos) {
+    monitor = Objects.requireNonNullElse(monitor, GLFWmonitor.NULL);
+    nglfwGetMonitorPos(monitor.getAddress(), xpos, ypos);
+  }
+
+  public static void glfwGetMonitorWorkarea(GLFWmonitor monitor, int[] xpos, int[] ypos, int[] width, int[] height) {
+    monitor = Objects.requireNonNullElse(monitor, GLFWmonitor.NULL);
+    nglfwGetMonitorWorkarea(monitor.getAddress(), xpos, ypos, width, height);
+  }
+
+  public static void glfwGetMonitorPhysicalSize(GLFWmonitor monitor, int[] widthMM, int[] heightMM) {
+    monitor = Objects.requireNonNullElse(monitor, GLFWmonitor.NULL);
+    nglfwGetMonitorPhysicalSize(monitor.getAddress(), widthMM, heightMM);
+  }
+
+  public static void glfwGetMonitorContentScale(GLFWmonitor monitor, float[] xscale, float[] yscale) {
+    monitor = Objects.requireNonNullElse(monitor, GLFWmonitor.NULL);
+    nglfwGetMonitorContentScale(monitor.getAddress(), xscale, yscale);
+  }
+
+  public static String glfwGetMonitorName(GLFWmonitor monitor) {
+    monitor = Objects.requireNonNullElse(monitor, GLFWmonitor.NULL);
+    return nglfwGetMonitorName(monitor.getAddress());
+  }
+
+  public static void glfwSetMonitorUserPointer(GLFWmonitor monitor, Pointer pointer) {
+    monitor = Objects.requireNonNullElse(monitor, GLFWmonitor.NULL);
+    pointer = Objects.requireNonNullElseGet(pointer, () -> new Pointer(0));
+    nglfwSetMonitorUserPointer(monitor.getAddress(), pointer.getAddress());
+  }
+
+  public static Pointer glfwGetMonitorUserPointer(GLFWmonitor monitor) {
+    monitor = Objects.requireNonNullElse(monitor, GLFWmonitor.NULL);
+    return new Pointer(nglfwGetMonitorUserPointer(monitor.getAddress()));
+  }
+
+  public static GLFWvidmode[] glfwGetVideoModes(GLFWmonitor monitor) {
+    monitor = Objects.requireNonNullElse(monitor, GLFWmonitor.NULL);
+    int[] count = new int[1];
+    return GLFWvidmode.fromAddress(nglfwGetVideoModes(monitor.getAddress(), count), count[0]);
+  }
+
+  public static GLFWvidmode glfwGetVideoMode(GLFWmonitor monitor) {
+    monitor = Objects.requireNonNullElse(monitor, GLFWmonitor.NULL);
+    return GLFWvidmode.fromAddress(nglfwGetVideoMode(monitor.getAddress()));
+  }
+
+  public static void glfwSetGamma(GLFWmonitor monitor, float gamma) {
+    monitor = Objects.requireNonNullElse(monitor, GLFWmonitor.NULL);
+    nglfwSetGamma(monitor.getAddress(), gamma);
+  }
+
+  public static GLFWgammaramp glfwGetGammaRamp(GLFWmonitor monitor) {
+    monitor = Objects.requireNonNullElse(monitor, GLFWmonitor.NULL);
+    return GLFWgammaramp.fromAddress(nglfwGetGammaRamp(monitor.getAddress()));
+  }
+
+  public static void glfwSetGammaRamp(GLFWmonitor monitor, GLFWgammaramp gammaRamp) {
+    Objects.requireNonNull(gammaRamp);
+    monitor = Objects.requireNonNullElse(monitor, GLFWmonitor.NULL);
+    nglfwSetGammaRamp(monitor.getAddress(), gammaRamp.getRed(), gammaRamp.getGreen(), gammaRamp.getBlue());
   }
 
 }

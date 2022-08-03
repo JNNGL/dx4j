@@ -1,5 +1,9 @@
 #include <jni/com_jnngl_dx4j_glfw_GLFW.h>
 #include <GLFW/glfw3.h>
+
+#define GLFW_EXPOSE_NATIVE_WIN32
+
+#include <GLFW/glfw3native.h>
 #include <callback_utils.h>
 
 #define CHECK_JARRAY_LENGTH(x) x && env->GetArrayLength(x) > 0
@@ -14,6 +18,7 @@ DECL_CALLBACK_GROUP(GLFWwindow*, GLFWwindowiconifyfun_cb)
 DECL_CALLBACK_GROUP(GLFWwindow*, GLFWwindowmaximizefun_cb)
 DECL_CALLBACK_GROUP(GLFWwindow*, GLFWframebuffersizefun_cb)
 DECL_CALLBACK_GROUP(GLFWwindow*, GLFWwindowcontentscalefun_cb)
+DECL_CALLBACK(GLFWmonitorfun_cb)
 
 [[maybe_unused]] JNIEXPORT jlong JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwCreateWindow
         (JNIEnv *env, jclass, jint width, jint height, jstring jtitle, jlong monitor, jlong share) {
@@ -276,7 +281,162 @@ DECL_CALLBACK_GROUP(GLFWwindow*, GLFWwindowcontentscalefun_cb)
     glfwPostEmptyEvent();
 }
 
+[[maybe_unused]] JNIEXPORT jstring JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetWin32Adapter
+        (JNIEnv *env, jclass, jlong monitor) {
+    return env->NewStringUTF(glfwGetWin32Adapter((GLFWmonitor *) monitor));
+}
+
+[[maybe_unused]] JNIEXPORT jstring JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetWin32Monitor
+        (JNIEnv *env, jclass, jlong monitor) {
+    return env->NewStringUTF(glfwGetWin32Monitor((GLFWmonitor *) monitor));
+}
+
+[[maybe_unused]] JNIEXPORT jlong JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetWin32Window
+        (JNIEnv *, jclass, jlong window) {
+    return (jlong) glfwGetWin32Window((GLFWwindow *) window);
+}
+
+[[maybe_unused]] JNIEXPORT jlongArray JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetMonitors
+        (JNIEnv *env, jclass) {
+    int count;
+    GLFWmonitor **monitors = glfwGetMonitors(&count);
+    if (!monitors || count <= 0) {
+        return nullptr;
+    }
+    jlongArray pointers = env->NewLongArray((jsize) count);
+    env->SetLongArrayRegion(pointers, 0, count, (jlong *) monitors);
+    return pointers;
+}
+
+[[maybe_unused]] JNIEXPORT jlong JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetPrimaryMonitor
+        (JNIEnv *, jclass) {
+    return (jlong) glfwGetPrimaryMonitor();
+}
+
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetMonitorPos
+        (JNIEnv *env, jclass, jlong monitor, jintArray jxposArr, jintArray jyposArr) {
+    int xpos, ypos;
+    glfwGetMonitorPos((GLFWmonitor *) monitor, &xpos, &ypos);
+    jint jxpos = xpos, jypos = ypos;
+    if (CHECK_JARRAY_LENGTH(jxposArr)) env->SetIntArrayRegion(jxposArr, 0, 1, &jxpos);
+    if (CHECK_JARRAY_LENGTH(jyposArr)) env->SetIntArrayRegion(jyposArr, 0, 1, &jypos);
+}
+
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetMonitorWorkarea
+        (JNIEnv *env, jclass, jlong monitor, jintArray jxposArr, jintArray jyposArr, jintArray jwidthArr,
+         jintArray jheightArr) {
+    int xpos, ypos, width, height;
+    glfwGetMonitorWorkarea((GLFWmonitor *) monitor, &xpos, &ypos, &width, &height);
+    jint jxpos = xpos, jypos = ypos, jwidth = width, jheight = height;
+    if (CHECK_JARRAY_LENGTH(jxposArr)) { env->SetIntArrayRegion(jxposArr, 0, 1, &jxpos); }
+    if (CHECK_JARRAY_LENGTH(jyposArr)) { env->SetIntArrayRegion(jyposArr, 0, 1, &jypos); }
+    if (CHECK_JARRAY_LENGTH(jwidthArr)) { env->SetIntArrayRegion(jwidthArr, 0, 1, &jwidth); }
+    if (CHECK_JARRAY_LENGTH(jheightArr)) { env->SetIntArrayRegion(jheightArr, 0, 1, &jheight); }
+}
+
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetMonitorPhysicalSize
+        (JNIEnv *env, jclass, jlong monitor, jintArray jwidthMMarr, jintArray jheightMMarr) {
+    int widthMM, heightMM;
+    glfwGetMonitorPhysicalSize((GLFWmonitor *) monitor, &widthMM, &heightMM);
+    jint jwidthMM = widthMM, jheightMM = heightMM;
+    if (CHECK_JARRAY_LENGTH(jwidthMMarr)) env->SetIntArrayRegion(jwidthMMarr, 0, 1, &jwidthMM);
+    if (CHECK_JARRAY_LENGTH(jheightMMarr)) env->SetIntArrayRegion(jheightMMarr, 0, 1, &jheightMM);
+}
+
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetMonitorContentScale
+        (JNIEnv *env, jclass, jlong monitor, jfloatArray jxscale, jfloatArray jyscale) {
+    float xscale, yscale;
+    glfwGetMonitorContentScale((GLFWmonitor *) monitor, &xscale, &yscale);
+    if (CHECK_JARRAY_LENGTH(jxscale)) env->SetFloatArrayRegion(jxscale, 0, 1, &xscale);
+    if (CHECK_JARRAY_LENGTH(jyscale)) env->SetFloatArrayRegion(jyscale, 0, 1, &yscale);
+}
+
+[[maybe_unused]] JNIEXPORT jstring JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetMonitorName
+        (JNIEnv *env, jclass, jlong monitor) {
+    return env->NewStringUTF(glfwGetMonitorName((GLFWmonitor *) monitor));
+}
+
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetMonitorUserPointer
+        (JNIEnv *, jclass, jlong monitor, jlong pointer) {
+    glfwSetMonitorUserPointer((GLFWmonitor *) monitor, (void *) pointer);
+}
+
+[[maybe_unused]] JNIEXPORT jlong JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetMonitorUserPointer
+        (JNIEnv *, jclass, jlong monitor) {
+    return (jlong) glfwGetMonitorUserPointer((GLFWmonitor *) monitor);
+}
+
+[[maybe_unused]] JNIEXPORT jlong JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetVideoModes
+        (JNIEnv *env, jclass, jlong monitor, jintArray jcountArr) {
+    int count;
+    const GLFWvidmode *vidmodes = glfwGetVideoModes((GLFWmonitor *) monitor, &count);
+    if (!vidmodes || count <= 0) {
+        return 0;
+    }
+    jint jcount = count;
+    if (CHECK_JARRAY_LENGTH(jcountArr)) env->SetIntArrayRegion(jcountArr, 0, 1, &jcount);
+    return (jlong) vidmodes;
+}
+
+[[maybe_unused]] JNIEXPORT jlong JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetVideoMode
+        (JNIEnv *, jclass, jlong monitor) {
+    return (jlong) glfwGetVideoMode((GLFWmonitor *) monitor);
+}
+
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetGamma
+        (JNIEnv *, jclass, jlong monitor, jfloat gamma) {
+    glfwSetGamma((GLFWmonitor *) monitor, gamma);
+}
+
+[[maybe_unused]] JNIEXPORT jlong JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwGetGammaRamp
+        (JNIEnv *, jclass, jlong monitor) {
+    return (jlong) glfwGetGammaRamp((GLFWmonitor *) monitor);
+}
+
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetGammaRamp
+        (JNIEnv *env, jclass, jlong monitor, jshortArray red, jshortArray green, jshortArray blue) {
+    size_t size = env->GetArrayLength(red);
+    GLFWgammaramp gammaramp{};
+    gammaramp.size = (unsigned) size;
+    gammaramp.red = (unsigned short *) env->GetShortArrayElements(red, nullptr);
+    gammaramp.green = (unsigned short *) env->GetShortArrayElements(green, nullptr);
+    gammaramp.blue = (unsigned short *) env->GetShortArrayElements(blue, nullptr);
+    glfwSetGammaRamp((GLFWmonitor *) monitor, &gammaramp);
+    env->ReleaseShortArrayElements(red, (short *) gammaramp.red, 0);
+    env->ReleaseShortArrayElements(green, (short *) gammaramp.green, 0);
+    env->ReleaseShortArrayElements(blue, (short *) gammaramp.blue, 0);
+}
+
 //// JAVA CALLBACKS ////
+
+[[maybe_unused]] JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwSetMonitorCallback
+        (JNIEnv *env, jclass, jobject callback) {
+    callback = env->NewGlobalRef(callback);
+    LOCK_CALLBACK(GLFWmonitorfun_cb)
+    CallbackDataPair &pair = CALLBACK_DATA(GLFWmonitorfun_cb);
+    jlong result;
+    if (callback) {
+        CALLBACK_SET(pair, INIT_CALLBACK_DATA(callback, "invoke", "(JI)V"))
+        result = (jlong) glfwSetMonitorCallback([](GLFWmonitor* monitor, int event) {
+            LOCK_CALLBACK(GLFWmonitorfun_cb)
+            CallbackData callback = CALLBACK_DATA(GLFWmonitorfun_cb).current;
+            if (callback.isValid()) {
+                callback.env->CallVoidMethod(
+                        callback.instance, callback.callback,
+                        (jlong) monitor, (jint) event);
+            }
+            UNLOCK_CALLBACK(GLFWmonitorfun_cb)
+        });
+    } else {
+        CALLBACK_SET(pair, {})
+        result = (jlong) glfwSetMonitorCallback(nullptr);
+    }
+    UNLOCK_CALLBACK(GLFWmonitorfun_cb)
+    if (!result) {
+        return nullptr;
+    }
+    return pair.old;
+}
 
 [[maybe_unused]] JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwSetErrorCallback
         (JNIEnv *env, jclass, jobject callback) {
