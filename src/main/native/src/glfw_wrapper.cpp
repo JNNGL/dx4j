@@ -5,6 +5,7 @@
 
 #include <GLFW/glfw3native.h>
 #include <callback_utils.h>
+#include <vector>
 
 #define CHECK_JARRAY_LENGTH(x) x && env->GetArrayLength(x) > 0
 
@@ -609,6 +610,30 @@ DECL_CALLBACK_GROUP(GLFWwindow*, GLFWdropfun_cb)
     return (jlong) glfwGetTimerFrequency();
 }
 
+[[maybe_unused]] JNIEXPORT void JNICALL Java_com_jnngl_dx4j_glfw_GLFW_nglfwSetWindowIcon
+        (JNIEnv *env, jclass, jlong window, jintArray jwidthsArr, jintArray jheightsArr, jobjectArray jpixelsArr) {
+    int count = (int) env->GetArrayLength(jwidthsArr);
+    jint *widths = env->GetIntArrayElements(jwidthsArr, nullptr);
+    jint *heights = env->GetIntArrayElements(jheightsArr, nullptr);
+    std::vector<jbyteArray> pixelArrays(count);
+    std::vector<GLFWimage> icons(count);
+    for (int i = 0; i < count; i++) {
+        GLFWimage icon;
+        icon.width = widths[i];
+        icon.height = heights[i];
+        auto pixels = (jbyteArray) env->GetObjectArrayElement(jpixelsArr, i);
+        icon.pixels = (unsigned char *) env->GetByteArrayElements(pixels, nullptr);
+        icons[i] = icon;
+        pixelArrays[i] = pixels;
+    }
+    glfwSetWindowIcon((GLFWwindow *) window, count, icons.data());
+    env->ReleaseIntArrayElements(jwidthsArr, widths, 0);
+    env->ReleaseIntArrayElements(jheightsArr, heights, 0);
+    for (int i = 0; i < count; i++) {
+        env->ReleaseByteArrayElements(pixelArrays[i], (jbyte *) icons[i].pixels, 0);
+    }
+}
+
 //// JAVA CALLBACKS ////
 
 [[maybe_unused]] JNIEXPORT jobject JNICALL Java_com_jnngl_dx4j_glfw_GLFW_glfwSetJoystickCallback
@@ -977,16 +1002,19 @@ DECL_CALLBACK_GROUP(GLFWwindow*, GLFWdropfun_cb)
     jlong result;
     if (callback) {
         CALLBACK_SET(pair, INIT_CALLBACK_DATA(callback, "invoke", "(JIIII)V"))
-        result = (jlong) glfwSetKeyCallback(window, [](GLFWwindow *window, int key, int scancode, int action, int mods) {
-            LOCK_CALLBACK(GLFWkeyfun_cb)
-            CallbackData callback = CALLBACK_GROUP_DATA(GLFWkeyfun_cb, window).current;
-            if (callback.isValid()) {
-                callback.env->CallVoidMethod(
-                        callback.instance, callback.callback,
-                        (jlong) window, (jint) key, (jint) scancode, (jint) action, (jint) mods);
-            }
-            UNLOCK_CALLBACK(GLFWkeyfun_cb)
-        });
+        result = (jlong) glfwSetKeyCallback(window,
+                                            [](GLFWwindow *window, int key, int scancode, int action, int mods) {
+                                                LOCK_CALLBACK(GLFWkeyfun_cb)
+                                                CallbackData callback = CALLBACK_GROUP_DATA(GLFWkeyfun_cb,
+                                                                                            window).current;
+                                                if (callback.isValid()) {
+                                                    callback.env->CallVoidMethod(
+                                                            callback.instance, callback.callback,
+                                                            (jlong) window, (jint) key, (jint) scancode, (jint) action,
+                                                            (jint) mods);
+                                                }
+                                                UNLOCK_CALLBACK(GLFWkeyfun_cb)
+                                            });
     } else {
         CALLBACK_SET(pair, {})
         result = (jlong) glfwSetKeyCallback(window, nullptr);
@@ -1187,7 +1215,7 @@ DECL_CALLBACK_GROUP(GLFWwindow*, GLFWdropfun_cb)
     jlong result;
     if (callback) {
         CALLBACK_SET(pair, INIT_CALLBACK_DATA(callback, "invoke", "(J[Ljava/lang/String;)V"))
-        result = (jlong) glfwSetDropCallback(window, [](GLFWwindow *window, int pathCount, const char* paths[]) {
+        result = (jlong) glfwSetDropCallback(window, [](GLFWwindow *window, int pathCount, const char *paths[]) {
             LOCK_CALLBACK(GLFWdropfun_cb)
             CallbackData callback = CALLBACK_GROUP_DATA(GLFWdropfun_cb, window).current;
             if (callback.isValid()) {

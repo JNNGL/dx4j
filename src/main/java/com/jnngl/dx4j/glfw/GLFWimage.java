@@ -1,7 +1,15 @@
 package com.jnngl.dx4j.glfw;
 
+import java.awt.AlphaComposite;
+import java.awt.Graphics2D;
+import java.awt.Transparency;
+import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
+import java.awt.image.ComponentColorModel;
+import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferByte;
+import java.awt.image.Raster;
+import java.awt.image.WritableRaster;
 
 public class GLFWimage {
 
@@ -15,9 +23,28 @@ public class GLFWimage {
     this.pixels = pixels;
   }
 
-  public BufferedImage toBufferedImage(int format) {
-    assert format >= BufferedImage.TYPE_3BYTE_BGR && format <= BufferedImage.TYPE_4BYTE_ABGR_PRE;
-    BufferedImage image = new BufferedImage(width, height, format);
+  public GLFWimage(int width, int height) {
+    this(width, height, new byte[width * height * 4]);
+  }
+
+  public GLFWimage(BufferedImage image) {
+    this.width = image.getWidth();
+    this.height = image.getHeight();
+    ComponentColorModel colorModel = new ComponentColorModel(
+        ColorSpace.getInstance(ColorSpace.CS_sRGB), true, false, Transparency.TRANSLUCENT, DataBuffer.TYPE_BYTE);
+    WritableRaster raster = Raster.createInterleavedRaster(
+        DataBuffer.TYPE_BYTE, image.getWidth(), image.getHeight(), image.getWidth() * 4, 4, new int[] {0, 1, 2, 3}, null);
+    BufferedImage rgba4 = new BufferedImage(colorModel, raster, colorModel.isAlphaPremultiplied(), null);
+    byte[] rgba = ((DataBufferByte) raster.getDataBuffer()).getData();
+    Graphics2D graphics = rgba4.createGraphics();
+    graphics.setComposite(AlphaComposite.Src);
+    graphics.drawImage(image, 0, 0, null);
+    graphics.dispose();
+    this.pixels = rgba;
+  }
+
+  public BufferedImage toBufferedImage() {
+    BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
     System.arraycopy(pixels, 0, ((DataBufferByte) image.getRaster().getDataBuffer()).getData(), 0, pixels.length);
     return image;
   }

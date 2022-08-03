@@ -4,9 +4,12 @@ import com.jnngl.dx4j.Dx4j;
 
 import static com.jnngl.dx4j.glfw.GLFW.*;
 
+import com.jnngl.dx4j.glfw.GLFWimage;
 import com.jnngl.dx4j.glfw.GLFWmonitor;
 import com.jnngl.dx4j.glfw.GLFWvidmode;
 import com.jnngl.dx4j.glfw.GLFWwindow;
+import java.awt.Color;
+import java.awt.image.BufferedImage;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -44,6 +47,21 @@ class Test {
       System.out.println(" - Refresh rate: " + vidmode.getRefreshRate());
       System.out.println();
     }
+
+    GLFWimage[] icons = new GLFWimage[3];
+
+    for (int i = 0; i < icons.length; i++) {
+      int dim = 16 * (i + 1);
+      BufferedImage icon = new BufferedImage(dim, dim, i % 2 == 0? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_4BYTE_ABGR);
+      for (int y = 0; y < dim; y++) {
+        for (int x = 0; x < dim; x++) {
+          icon.setRGB(x, y, new Color((float) x / dim, (float) y / dim, 0.f, 1.f).getRGB());
+        }
+      }
+      icons[i] = new GLFWimage(icon);
+    }
+
+    glfwSetWindowIcon(window, icons);
 
     glfwSetMonitorCallback((mon, event) -> System.out.println(glfwGetMonitorName(mon) + ": " + event));
 

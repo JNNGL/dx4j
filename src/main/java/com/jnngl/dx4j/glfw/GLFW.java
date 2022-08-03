@@ -2,7 +2,9 @@ package com.jnngl.dx4j.glfw;
 
 import com.jnngl.dx4j.common.Pointer;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class GLFW {
 
@@ -322,7 +324,7 @@ public class GLFW {
 
   private static native void nglfwSetWindowTitle(long window, String title);
 
-  // TODO: glfwSetWindowIcon
+  private static native void nglfwSetWindowIcon(long window, int[] widths, int[] heights, byte[][] pixels);
 
   private static native void nglfwGetWindowPos(long window, int[] xpos, int[] ypos);
 
@@ -942,6 +944,16 @@ public class GLFW {
   public static String glfwGetClipboardString(GLFWwindow window) {
     window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
     return nglfwGetClipboardString(window.getAddress());
+  }
+
+  public static void glfwSetWindowIcon(GLFWwindow window, GLFWimage[] images) {
+    window = Objects.requireNonNullElse(window, GLFWwindow.NULL);
+    images = Objects.requireNonNullElseGet(images, () -> new GLFWimage[0]);
+    List<GLFWimage> icons = Arrays.stream(images).filter(Objects::nonNull).collect(Collectors.toList());
+    nglfwSetWindowIcon(window.getAddress(),
+        icons.stream().mapToInt(GLFWimage::getWidth).toArray(),
+        icons.stream().mapToInt(GLFWimage::getHeight).toArray(),
+        icons.stream().map(GLFWimage::getPixels).toArray(byte[][]::new));
   }
 
 }
